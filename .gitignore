@@ -51,3 +51,5 @@ Thumbs.db
 *.der
 *.key
 *.pem
+
+api-key.js
