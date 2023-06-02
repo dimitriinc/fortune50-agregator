@@ -1,0 +1,1 @@
+export const testMatch = ['**/__tests__/**/*.js']

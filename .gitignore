@@ -53,3 +53,4 @@ Thumbs.db
 *.pem
 
 api-key.js
+package-lock.json
