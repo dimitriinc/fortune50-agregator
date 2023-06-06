@@ -12,11 +12,8 @@
     "type": "git",
     "url": "git+https://github.com/dimitriinc/fortune50-agregator.git"
   },
-  "author": "",
+  "author": "DimitriInc.",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/dimitriinc/fortune50-agregator/issues"
-  },
   "homepage": "https://github.com/dimitriinc/fortune50-agregator#readme",
   "devDependencies": {
     "babel-loader": "^9.1.2",
