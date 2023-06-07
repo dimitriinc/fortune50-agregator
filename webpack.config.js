@@ -1,6 +1,6 @@
 const path = require('path')
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+// const CssMinimizerPlugin = require('css-minimizer-webpack-plugin')
+// const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
     entry: './src/js/index.js',
@@ -21,11 +21,11 @@ module.exports = {
             // },
         ]
     },
-    optimization: {
-        minimizer: [
-            new CssMinimizerPlugin(),
-        ],
-        minimize: true,
-    },
-    plugins: [new MiniCssExtractPlugin()]
+    // optimization: {
+    //     minimizer: [
+    //         new CssMinimizerPlugin(),
+    //     ],
+    //     minimize: true,
+    // },
+    // plugins: [new MiniCssExtractPlugin()]
 }
