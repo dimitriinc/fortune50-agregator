@@ -15,12 +15,10 @@ module.exports = {
     //             exclude: /node_modules/,
     //             use: 'babel-loader'
     //         },
-            {
-                test: /\.css$/i,
-                use: ['style-loader', 'css-loader']
+            // {
                 // test: /.s?scss$/,
                 // use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
-            }
+            // },
         ]
     },
     optimization: {

@@ -1,12 +1,11 @@
-import '../style.css'
 import _ from 'lodash'
 import apiKeys from './conifg'
-
 
 function component() {
     const element = document.createElement('div')
     element.innerHTML = _.join(['Hello', 'webpack'], ' ')
     element.classList.add('hello')
+
     return element
 }
 
@@ -24,4 +23,4 @@ async function getCompanyOverview(symbol) {
     console.log(data)
 }
 
-getCompanyOverview('IBM')
+// getCompanyOverview('IBM')
