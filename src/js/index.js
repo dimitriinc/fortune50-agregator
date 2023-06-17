@@ -1,22 +1,7 @@
 import _ from 'lodash'
 import apiKeys from './conifg'
-import printMe from './print'
-
-function component() {
-    const element = document.createElement('div')
-    const button = document.createElement('button')
-    element.innerHTML = _.join(['Hello', 'webpack'], ' ')
-    element.setAttribute('style', 'color:red;')
-
-    button.innerHTML = 'Click ME!'
-    button.addEventListener('click', printMe)
-
-    element.appendChild(button)
-
-    return element
-}
-
-document.body.appendChild(component())
+import { LIMIT } from './conifg'
+import { stockExchanges } from './conifg'
 
 async function getCompanyProfileModelingPrep(symbol) {
     const response = await fetch(`https://financialmodelingprep.com/api/v3/profile/${symbol}?apikey=${apiKeys.financialModelingPrep}`)
@@ -41,29 +26,30 @@ function displayCompanyInfo(data) {
 }
 
 async function getNasdaqCompaniesMarketStack() {
-    const apiKey = apiKeys.marketstack
-    const exchange = 'NASDAQ'
-    const limit = 50
-    const sort = 'DESC'
 
-    const response = await fetch(`http://api.marketstack.com/v1/tickers?access_key=${apiKey}&exchange=${exchange}&limit=${limit}&sort=${sort}`)
+    const response = await fetch(`http://api.marketstack.com/v1/exchanges/XNAS/tickers?access_key=${apiKeys.marketstack}&limit=${LIMIT}`)
     const data = await response.json()
 
-    console.log(data)
+    console.log(data.data.tickers)
 }
 
-async function getCompaniesNasdaq() {
-    const response = await fetch(`https://api.nasdaq.com/api/screener/stocks?marketcap=mega&table=COMPANY&limit=50&api_key=${apiKeys.nasdaq}`)
-    console.log(response)
+async function getTickersMarketstack(stockExchange) {
+    const response = await fetch(`http://api.marketstack.com/v1/tickers?access_key=${apiKeys.marketstack}&exchange=${stockExchange}&limit=${LIMIT}`)
+    const data = await response.json()
+    const companiesArray = data.data
+
+    companiesArray.forEach((company, index) => {
+        displayCompany(company, index)
+    })
+
+    console.log(data.data)
 }
 
-getCompaniesNasdaq()
+getTickersMarketstack(stockExchanges.tokyoStockExchange)
 
-// const colliers = getCompanyOverview('CIGI')
-// const apple = getCompanyOverview('AAPL')
-
-// const comparisonElement = document.createElement('div')
-// comparisonElement.innerHTML = `${colliers.MarketCapitalization > apple.MarketCapitalization ? 'Colliers is biggern than Apple' : 'Apple is bigger than Colliers'}`
-// document.body.appendChild(comparisonElement)
-
-
+function displayCompany(company, index) {
+    const element = document.createElement('div')
+    element.innerHTML = `${index + 1}<br><br>${company.name}`
+    element.setAttribute('style', 'padding:1rem;margin:1rem;border:1px solid blue;text-align:center')
+    document.body.appendChild(element)
+}

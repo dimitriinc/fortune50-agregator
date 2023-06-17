@@ -9,7 +9,6 @@ module.exports = {
 
     entry: {
         index: './src/js/index.js',
-        print: './src/js/print.js'
     },
 
     devtool: 'inline-source-map',

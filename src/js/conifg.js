@@ -6,4 +6,12 @@ const apiKeys = {
     marketstack: 'd55ffada196b7257f5100135ae74865a'
 }
 
+export const LIMIT = 50
+
+export const stockExchanges = {
+    newYorkStockExchange: 'XNYS',
+    nasdaq: 'XNAS',
+    tokyoStockExchange: 'XTKS'
+}
+
 export default apiKeys
