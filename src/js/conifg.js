@@ -9,9 +9,9 @@ const apiKeys = {
 export const LIMIT = 50
 
 export const stockExchanges = {
-    newYorkStockExchange: 'XNYS',
-    nasdaq: 'XNAS',
-    tokyoStockExchange: 'XTKS'
+    newYorkStockExchange: 'nyse',
+    nasdaq: 'nasdaq',
+    euroNext: 'euronext'
 }
 
 export default apiKeys

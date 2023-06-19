@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import '../scss/style.scss'
 import apiKeys from './conifg'
 import { LIMIT } from './conifg'
 import { stockExchanges } from './conifg'
@@ -17,12 +17,13 @@ async function getCompanyOverviewAlphaVantage(symbol) {
     return data
 }
 
-function displayCompanyInfo(data) {
-    const element = document.createElement('div')
-    element.setAttribute('style', 'padding: 3rem')
-    element.innerHTML = _.join([data.Name, data.MarketCapitalization], ': ')
-    document.body.appendChild(element)
-
+async function getStockScreenerFinModelPrep(exchange) {
+    const response = await fetch(`https://financialmodelingprep.com/api/v3/stock-screener?&exchange=${exchange}&limit=${LIMIT}&apikey=${apiKeys.financialModelingPrep}`)
+    const data = await response.json()
+    console.log(data)
+    data.forEach((company, index) => {
+        displayCompany(company, index)
+    })
 }
 
 async function getNasdaqCompaniesMarketStack() {
@@ -45,11 +46,22 @@ async function getTickersMarketstack(stockExchange) {
     console.log(data.data)
 }
 
-getTickersMarketstack(stockExchanges.tokyoStockExchange)
-
 function displayCompany(company, index) {
+    const marketCap = formatMarketCap(company.marketCap)
     const element = document.createElement('div')
-    element.innerHTML = `${index + 1}<br><br>${company.name}`
+    element.innerHTML = `${index + 1}<br><br>${company.companyName}<br><br>${marketCap}`
     element.setAttribute('style', 'padding:1rem;margin:1rem;border:1px solid blue;text-align:center')
     document.body.appendChild(element)
 }
+
+function formatMarketCap(marketCap) {
+    const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        notation: 'compact'
+    })
+    return formatter.format(marketCap)
+}
+
+getStockScreenerFinModelPrep(stockExchanges.euroNext)
+

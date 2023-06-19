@@ -5,9 +5,9 @@
   "private": "true",
   "scripts": {
     "test": "jest",
-    "build": "webpack --mode production",
+    "build": "webpack --config webpack.prod.js",
     "watch": "webpack --watch",
-    "start": "webpack serve --open"
+    "start": "webpack serve --open --config webpack.dev.js"
   },
   "repository": {
     "type": "git",
@@ -17,16 +17,25 @@
   "license": "ISC",
   "homepage": "https://github.com/dimitriinc/fortune50-agregator#readme",
   "devDependencies": {
+    "@babel/core": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "autoprefixer": "^10.4.14",
     "babel-loader": "^9.1.2",
+    "css-loader": "^6.8.1",
     "css-minimizer-webpack-plugin": "^5.0.0",
+    "cssnano": "^6.0.1",
     "html-webpack-plugin": "^5.5.1",
     "jest": "^29.5.0",
     "mini-css-extract-plugin": "^2.7.6",
+    "postcss-loader": "^7.3.3",
+    "rucksack-css": "^1.0.2",
     "sass": "^1.62.1",
     "sass-loader": "^13.3.1",
+    "style-loader": "^3.3.3",
     "webpack": "^5.85.0",
     "webpack-cli": "^5.1.1",
-    "webpack-dev-server": "^4.15.0"
+    "webpack-dev-server": "^4.15.0",
+    "webpack-merge": "^5.9.0"
   },
   "dependencies": {
     "lodash": "^4.17.21"
