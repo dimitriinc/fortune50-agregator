@@ -1,0 +1,30 @@
+@font-face {
+    font-family: 'eurostile';
+    src: url('../fonts/eurostile.TTF');
+}
+
+@font-face {
+    font-family: 'futura';
+    src: url('../fonts/FuturaLT-Book.ttf');
+}
+
+
+html {
+    box-sizing: border-box;
+    font-size: 100%;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+body {
+    padding: 0;
+}

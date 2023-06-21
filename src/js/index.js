@@ -3,6 +3,8 @@ import apiKeys from './conifg'
 import { LIMIT } from './conifg'
 import { stockExchanges } from './conifg'
 
+const gridContainer = document.querySelector('.grid-container')
+
 async function getCompanyProfileModelingPrep(symbol) {
     const response = await fetch(`https://financialmodelingprep.com/api/v3/profile/${symbol}?apikey=${apiKeys.financialModelingPrep}`)
     const data = await response.json()
@@ -48,10 +50,21 @@ async function getTickersMarketstack(stockExchange) {
 
 function displayCompany(company, index) {
     const marketCap = formatMarketCap(company.marketCap)
-    const element = document.createElement('div')
-    element.innerHTML = `${index + 1}<br><br>${company.companyName}<br><br>${marketCap}`
-    element.setAttribute('style', 'padding:1rem;margin:1rem;border:1px solid blue;text-align:center')
-    document.body.appendChild(element)
+    const html = `
+        <div class="grid-item" data-symbol="${company.symbol}">
+            <div class="grid-item--rating">
+                <span class="grid-item--rating--content">${index + 1}</span>
+            </div>
+            <div class="grid-item--card">
+                <div class="grid-item--card--name">
+                    <div class="grid-item--card--name--company-name">${company.companyName}</div>
+                    <div class="grid-item--card--name--symbol">${company.symbol}</div>
+                </div>
+                <div class="grid-item--card--marketcap">${marketCap}</div>
+            </div>
+        </div> 
+    `
+    document.body.insertAdjacentHTML('beforeend', html)
 }
 
 function formatMarketCap(marketCap) {
