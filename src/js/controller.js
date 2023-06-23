@@ -1,5 +1,5 @@
 import '../scss/style.scss'
-import apiKeys from './conifg'
+import { apiKeys } from './conifg'
 import { LIMIT } from './conifg'
 import { stockExchanges } from './conifg'
 
@@ -20,7 +20,7 @@ async function getCompanyOverviewAlphaVantage(symbol) {
 }
 
 async function getStockScreenerFinModelPrep(exchange) {
-    const response = await fetch(`https://financialmodelingprep.com/api/v3/stock-screener?&exchange=${exchange}&limit=${LIMIT}&apikey=${apiKeys.financialModelingPrep}`)
+    const response = await fetch(`https://financialmodelingprep.com/api/v3/stock-screener?exchange=${exchange}&limit=${LIMIT}&apikey=${apiKeys.financialModelingPrep}`)
     const data = await response.json()
     console.log(data)
     data.forEach((company, index) => {
@@ -76,5 +76,5 @@ function formatMarketCap(marketCap) {
     return formatter.format(marketCap)
 }
 
-getStockScreenerFinModelPrep(stockExchanges.euroNext)
+getStockScreenerFinModelPrep(stockExchanges.nasdaq)
 
