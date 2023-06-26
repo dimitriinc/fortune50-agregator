@@ -1,6 +1,7 @@
 import { FIN_MODEL_PREP_BASE_URL } from "./conifg"
 import { FINNHUB_BASE_URL } from "./conifg"
 import { ALPHA_VANTAGE_BASE_URL } from "./conifg"
+import { POLYGON_IO_BASE_URL } from "./conifg"
 import { TIMEOUT_SEC } from "./conifg"
 import { apiKeys } from './conifg'
 import { LIMIT } from './conifg'
@@ -26,7 +27,11 @@ export const AJAX = async function(url) {
 }
 
 export const getFinModelPrepScreenerUrl = function(exchange) {
-    return `${FIN_MODEL_PREP_BASE_URL}?exchange=${exchange}&limit=${LIMIT}&apikey=${apiKeys.financialModelingPrep}`
+    return `${FIN_MODEL_PREP_BASE_URL}stock-screener?exchange=${exchange}&limit=${LIMIT}&apikey=${apiKeys.financialModelingPrep}`
+}
+
+export const getFinModelPrepProfilerUrl = function(symbol) {
+    return `${FIN_MODEL_PREP_BASE_URL}profile/${symbol}?apikey=${apiKeys.financialModelingPrep}`
 }
 
 export const getFinnhubProfileUrl = function(symbol) {
@@ -35,4 +40,17 @@ export const getFinnhubProfileUrl = function(symbol) {
 
 export const getAlphaVantageOverviewUrl = function(symbol) {
     return`${ALPHA_VANTAGE_BASE_URL}?symbol=${symbol}&function=OVERVIEW&apikey=${apiKeys.alphaVantage}`
+}
+
+export const getPolygonAggregateUrl = function(symbol, todayTimestamp, pastTimestamp) {
+    return`${POLYGON_IO_BASE_URL}aggs/ticker/${symbol}/range/1/day/${pastTimestamp}/${todayTimestamp}?&limit=30&apiKey=${apiKeys.polygon_io}`
+}
+
+export const getTimestamps = function(daysAgo) {
+    const today = new Date()
+    const todayTimestamp = today.getTime()
+    const someDaysAgo = new Date()
+    someDaysAgo.setDate(today.getDate() - daysAgo)
+    const someDaysAgoTimestamp = someDaysAgo.getTime()
+    return [todayTimestamp, someDaysAgoTimestamp]
 }

@@ -1,8 +1,10 @@
-body {
+.grid-container {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-gap: 1rem;
-    font-family: eurostile;
+    margin-left: 2rem;
+    margin-right: 2rem;
+    color: $text_color;
 
     @include breakpoint-down(desktop) {
         grid-template-columns: repeat(4, 1fr);
@@ -33,13 +35,13 @@ body {
             margin: 1rem;
             margin-left: auto;
             margin-right: auto;
-            border: 1px solid red;
+            border: 1px solid $auxiliary_color;
             border-radius: 50%;
         }
 
         &--card {
             padding: 1rem;
-            border: 2px solid blue;
+            border: 2px solid;
             border-radius: 10px;
             cursor: pointer;
 
@@ -68,7 +70,7 @@ body {
                     width: 50%;
                     height: 1px;
                     transform: translateY(-5px);
-                    background-color: gold;
+                    background-color: $auxiliary_color;
                 }
             }
         }
