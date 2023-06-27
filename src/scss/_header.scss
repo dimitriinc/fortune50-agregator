@@ -1,6 +1,7 @@
 header {
 
     color: $text_color;
+    margin-bottom: 4rem;
 
     .header--title {
         width: 100%;
@@ -8,5 +9,37 @@ header {
         font-size: 60px;
         padding: 2rem;
         text-align: center;
+        transition: letter-spacing 1s ease;
+
+        &:hover {
+            letter-spacing: 5px;
+        }
+    }
+
+    nav {
+
+        text-align: center;
+
+        .btn-exchange {
+
+            display: inline-block;
+            position: relative;
+            width: 7rem;
+            margin: 1rem;
+            padding: 0.8rem;
+            border: 1px solid $text_color;
+            border-radius: 1rem;
+            text-align: center;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background-color: $auxiliary_color;
+                color: $background_color;
+            }
+
+            
+        }
     }
 }

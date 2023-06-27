@@ -1,0 +1,17 @@
+@keyframes submerge {
+    from {
+        bottom: 0;
+    }
+    to {
+        bottom: -30px;
+    }
+}
+
+@keyframes emerge {
+    from {
+        bottom: -30px;
+    }
+    to {
+        bottom: 0px;
+    }
+}

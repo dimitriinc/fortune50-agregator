@@ -1,6 +1,8 @@
 class View {
 
     _gridContainer
+    _mySingature
+    _myEmail
 
     renderHeader() {
         const html = `
@@ -8,18 +10,44 @@ class View {
                 <div class='header--title'>
                     Fortune 50
                 </div>
+
+                <nav>
+                    <div class="btn-exchange">NYSE</div>
+                    <div class="btn-exchange">NASDAQ</div>
+                </nav>
             </header>
         `
         document.body.insertAdjacentHTML('afterbegin', html)
     }
 
-    renderGrid() {
+    renderEmptyGrid() {
         const html = `
             <div class="grid-container">
             </div>
         `
         document.body.insertAdjacentHTML('beforeend', html)
         this._gridContainer = document.querySelector('.grid-container')
+    }
+
+    renderGrid() {
+
+    }
+
+    renderFooter() {
+        const html = `
+            <footer>
+                <div class="corporate-container">
+                    <p id="dimi_signature" class="emerged">powered by DimitriInc.</p>
+                    <p id="dimi_email" class="submerged">dimitriinc@proton.me</p>
+                </div>
+            </footer>
+        `
+        document.body.insertAdjacentHTML('beforeend', html)
+        this._mySingature = document.getElementById('dimi_signature')
+        this._myEmail = document.getElementById('dimi_email')
+
+        this._mySingature.addEventListener('click', () => {this._switchCorporates()})
+        this._myEmail.addEventListener('click', () => {this._switchCorporates()})
     }
 
     renderCompany(company, index) {
@@ -48,6 +76,13 @@ class View {
             notation: 'compact'
         })
         return formatter.format(marketCap)
+    }
+
+    _switchCorporates() {
+        this._myEmail.classList.toggle('submerged')
+        this._myEmail.classList.toggle('emerged')
+        this._mySingature.classList.toggle('emerged')
+        this._mySingature.classList.toggle('submerged')
     }
 }
 

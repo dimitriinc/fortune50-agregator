@@ -5,6 +5,7 @@
     margin-left: 2rem;
     margin-right: 2rem;
     color: $text_color;
+    min-height: 100vh;
 
     @include breakpoint-down(desktop) {
         grid-template-columns: repeat(4, 1fr);
@@ -43,7 +44,13 @@
             padding: 1rem;
             border: 2px solid;
             border-radius: 10px;
+            background-color: $secondary_background_color;
             cursor: pointer;
+            transition: scale .3s ease;
+
+            &:hover {
+                scale: 103%;
+            }
 
             &--name {
 

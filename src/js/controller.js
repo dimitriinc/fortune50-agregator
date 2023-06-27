@@ -2,11 +2,14 @@ import '../scss/style.scss'
 import * as model from './model'
 import view from './view'
 import { stockExchanges } from './conifg'
-import { DAYS_AGO_MONTH, DAYS_AGO_QUARTER, DAYS_AGO_YEAR } from './conifg'
+import { DAYS_AGO_MONTH, DAYS_AGO_QUARTER, DAYS_AGO_YEAR, SHOW_EMAIL, SHOW_SIGNATURE } from './conifg'
 
 async function init() {
+
     view.renderHeader()
-    view.renderGrid()
+    view.renderEmptyGrid()
+    view.renderFooter()
+    // view.showCorporates(SHOW_SIGNATURE)
 
     model.setTimestamps(DAYS_AGO_MONTH)
     
@@ -16,6 +19,7 @@ async function init() {
     })
     model.fetchStockPrices("GOOG")
 }
+
 
 
 

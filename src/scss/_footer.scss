@@ -1,0 +1,40 @@
+footer {
+
+    margin-top: 5rem;
+    height: 8rem;
+    color: $text_color;
+    border-top: 2px solid;
+
+    .corporate-container {
+
+        position: relative;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+
+        #dimi_signature, #dimi_email {
+            display: block;
+            position: absolute;
+            bottom: -30px;
+            left: 0;
+            right: 0;
+            padding: .3rem;
+            margin: 0;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: .8rem;
+            transition: scale 200ms ease-in-out;
+            cursor: pointer;
+            width: fit-content;
+            font-family: futura;
+    
+            &:hover {
+                scale: 105%;
+            }
+            &:active {
+                scale: 100%;
+            }
+        }
+    }
+}

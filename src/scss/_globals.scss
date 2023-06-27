@@ -27,6 +27,15 @@ html {
 
 body {
     padding: 0;
+    margin-bottom: 0;
     background-color: $background_color;
     font-family: eurostile;
+}
+
+.emerged {
+    animation: emerge 500ms ease-out 800ms forwards;
+}
+
+.submerged {
+    animation: submerge 500ms ease-in forwards;
 }
