@@ -12,8 +12,8 @@ class View {
                 </div>
 
                 <nav>
-                    <div class="btn-exchange">NYSE</div>
-                    <div class="btn-exchange">NASDAQ</div>
+                    <div class="btn-exchange" data-mic="nyse">NYSE</div>
+                    <div class="btn-exchange" data-mic="nasdaq">NASDAQ</div>
                 </nav>
             </header>
         `

@@ -9,15 +9,21 @@ async function init() {
     view.renderHeader()
     view.renderEmptyGrid()
     view.renderFooter()
-    // view.showCorporates(SHOW_SIGNATURE)
 
-    model.setTimestamps(DAYS_AGO_MONTH)
+    window.addEventListener('hashchange', onHashChange)
+    window.location.hash = stockExchanges.newYorkStockExchange
+    onHashChange()
     
-    await model.fetchCompaniesRating(stockExchanges.nasdaq)
+    model.setTimestamps(DAYS_AGO_MONTH)    
+    model.fetchStockPrices("GOOG")
+}
+
+async function onHashChange() {
+    const stockExchange = window.location.hash.slice(1)
+    await model.fetchCompaniesRating(stockExchange)
     model.state.companies.forEach((company, index) => {
         view.renderCompany(company, index)
     })
-    model.fetchStockPrices("GOOG")
 }
 
 
