@@ -1,6 +1,9 @@
+import spinner from '../images/spinner.svg'
+
 class View {
 
     _gridContainer
+    _spinner
     _mySingature
     _myEmail
 
@@ -20,17 +23,26 @@ class View {
         document.body.insertAdjacentHTML('afterbegin', html)
     }
 
-    renderEmptyGrid() {
+    renderMain() {
         const html = `
-            <div class="grid-container">
-            </div>
+            <main>
+                <img id="grid-spinner" src="${spinner}">
+                <div class="grid-container" style="opacity:0"></div>
+            </main>
         `
         document.body.insertAdjacentHTML('beforeend', html)
         this._gridContainer = document.querySelector('.grid-container')
+        this._spinner = document.getElementById('grid-spinner')
     }
 
-    renderGrid() {
+    emptyGridContainer() {
+        this._gridContainer.innerHTML = ''
+        this._gridContainer.setAttribute('style', 'opacity:0')
+    }
 
+    renderSpinner() {
+        this.emptyGridContainer()
+        this._spinner.setAttribute('style', 'opacity: 1')
     }
 
     renderFooter() {
@@ -67,6 +79,14 @@ class View {
             </div> 
         `
         this._gridContainer.insertAdjacentHTML('beforeend', html)
+    }
+
+    showGrid() {
+        this._gridContainer.setAttribute('style', 'opacity:1')
+    }
+
+    hideSpinner() {
+        this._spinner.setAttribute('style', 'opacity: 0')
     }
 
     _formatMarketCap(marketCap) {
