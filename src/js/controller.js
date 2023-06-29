@@ -19,14 +19,21 @@ async function init() {
 }
 
 async function onHashChange() {
-    view.renderSpinner()
-    const stockExchange = window.location.hash.slice(1)
-    await model.fetchCompaniesRating(stockExchange)
-    model.state.companies.forEach((company, index) => {
-        view.renderCompany(company, index)
-    })
-    view.showGrid()
-    view.hideSpinner()
+    try {
+        view.renderSpinner()
+        const stockExchange = window.location.hash.slice(1)
+        await model.fetchCompaniesRating(stockExchange)
+
+        view.highlightExchange(stockExchange)
+        model.state.companies.forEach((company, index) => {
+            view.renderCompany(company, index)
+        })
+        view.showGrid()
+        view.hideSpinner()
+    } catch (error) {
+        console.error(error)
+        view.renderError(error.message)
+    }
 }
 
 

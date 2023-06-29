@@ -1,5 +1,6 @@
 main {
     position: relative;
+    color: $text_color;
 
     #grid-spinner {
         position: absolute;
@@ -12,13 +13,18 @@ main {
         z-index: 0;
     }
 
+    .error-message {
+        text-align: center;
+        margin-top: 9rem;
+        transition: opacity .5s ease;
+    }
+
     .grid-container {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         grid-gap: 1rem;
         margin-left: 2rem;
         margin-right: 2rem;
-        color: $text_color;
         min-height: 100vh;
         transition: opacity 1s ease;
         z-index: 999;

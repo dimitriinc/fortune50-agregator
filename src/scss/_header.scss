@@ -20,6 +20,13 @@ header {
 
         text-align: center;
 
+        .active {
+            background-color: $auxiliary_color;
+            color: $background_color;
+            cursor: default;
+            pointer-events: none;
+        }
+
         .btn-exchange {
 
             display: inline-block;

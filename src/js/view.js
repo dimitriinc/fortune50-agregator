@@ -1,4 +1,5 @@
 import spinner from '../images/spinner.svg'
+import { stockExchanges } from './conifg'
 
 class View {
 
@@ -6,6 +7,8 @@ class View {
     _spinner
     _mySingature
     _myEmail
+    _nyseBtn
+    _nasdaqBtn
 
     renderHeader() {
         const html = `
@@ -15,12 +18,14 @@ class View {
                 </div>
 
                 <nav>
-                    <div class="btn-exchange" data-mic="nyse">NYSE</div>
-                    <div class="btn-exchange" data-mic="nasdaq">NASDAQ</div>
+                    <div id="nyse-btn" class="btn-exchange" data-mic="nyse">NYSE</div>
+                    <div id="nasdaq-btn" class="btn-exchange" data-mic="nasdaq">NASDAQ</div>
                 </nav>
             </header>
         `
         document.body.insertAdjacentHTML('afterbegin', html)
+        this._nyseBtn = document.getElementById('nyse-btn')
+        this._nasdaqBtn = document.getElementById('nasdaq-btn')
     }
 
     renderMain() {
@@ -33,16 +38,6 @@ class View {
         document.body.insertAdjacentHTML('beforeend', html)
         this._gridContainer = document.querySelector('.grid-container')
         this._spinner = document.getElementById('grid-spinner')
-    }
-
-    emptyGridContainer() {
-        this._gridContainer.innerHTML = ''
-        this._gridContainer.setAttribute('style', 'opacity:0')
-    }
-
-    renderSpinner() {
-        this.emptyGridContainer()
-        this._spinner.setAttribute('style', 'opacity: 1')
     }
 
     renderFooter() {
@@ -81,12 +76,47 @@ class View {
         this._gridContainer.insertAdjacentHTML('beforeend', html)
     }
 
+    renderSpinner() {
+        if (document.querySelector('.error-message')) document.querySelector('.error-message').remove()
+        
+        this.emptyGridContainer()
+        this._spinner.setAttribute('style', 'opacity: 1')
+    }
+
+    renderError(message) {
+        this.hideSpinner()
+        this.emptyGridContainer()
+        const html = `
+            <div class="error-message" style="opacity:0">
+                ${message}
+            </div>
+        `
+        document.querySelector('main').insertAdjacentHTML('afterbegin', html)
+        document.querySelector('.error-message').setAttribute('style', 'opacity:1')
+    }
+
     showGrid() {
+        if (document.querySelector('.error-message')) document.querySelector('.error-message').remove()
         this._gridContainer.setAttribute('style', 'opacity:1')
+    }
+
+    emptyGridContainer() {
+        this._gridContainer.innerHTML = ''
+        this._gridContainer.setAttribute('style', 'opacity:0')
     }
 
     hideSpinner() {
         this._spinner.setAttribute('style', 'opacity: 0')
+    }
+
+    highlightExchange(exchange) {
+        if (exchange === stockExchanges.newYorkStockExchange) {
+            this._nyseBtn.classList.add('active')
+            this._nasdaqBtn.classList.remove('active')
+        } else {
+            this._nyseBtn.classList.remove('active')
+            this._nasdaqBtn.classList.add('active')
+        }
     }
 
     _formatMarketCap(marketCap) {
