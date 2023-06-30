@@ -119,6 +119,14 @@ class View {
         }
     }
 
+    addExchangeHandler(handler) {
+        document.querySelectorAll('.btn-exchange').forEach(btn => {
+            btn.addEventListener('click', () => {
+                handler(btn.dataset.mic)
+            })
+        })
+    }
+
     _formatMarketCap(marketCap) {
         const formatter = new Intl.NumberFormat('en-US', {
             style: 'currency',

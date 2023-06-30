@@ -13,6 +13,8 @@ async function init() {
     window.addEventListener('hashchange', onHashChange)
     window.location.hash = stockExchanges.newYorkStockExchange
     onHashChange()
+
+    view.addExchangeHandler(controlExchangeButtons)
     
     model.setTimestamps(DAYS_AGO_MONTH)    
     model.fetchStockPrices("GOOG")
@@ -34,6 +36,10 @@ async function onHashChange() {
         console.error(error)
         view.renderError(error.message)
     }
+}
+
+function controlExchangeButtons(mic) {
+    window.location.hash = mic
 }
 
 
