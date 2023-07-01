@@ -6,6 +6,7 @@ import { DAYS_AGO_MONTH, DAYS_AGO_QUARTER, DAYS_AGO_YEAR, SHOW_EMAIL, SHOW_SIGNA
 
 async function init() {
 
+    view.renderOverlay()
     view.renderHeader()
     view.renderMain()
     view.renderFooter()
@@ -15,6 +16,8 @@ async function init() {
     onHashChange()
 
     view.addExchangeHandler(controlExchangeButtons)
+    view.addSelectHandler(controlSelect)
+    view.addDeselectHandler()
     
     model.setTimestamps(DAYS_AGO_MONTH)    
     model.fetchStockPrices("GOOG")
@@ -40,6 +43,13 @@ async function onHashChange() {
 
 function controlExchangeButtons(mic) {
     window.location.hash = mic
+}
+
+async function controlSelect(symbol) {
+    console.log(`SYMBOL received:: ${symbol}`)
+    const company = await model.fetchCompanyOverview(symbol)
+    console.log(company)
+    view.renderCompanySelected(company)
 }
 
 

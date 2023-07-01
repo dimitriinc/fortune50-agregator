@@ -39,3 +39,8 @@ body {
 .submerged {
     animation: submerge 500ms ease-in forwards;
 }
+
+.visible {
+    visibility: visible !important;
+    opacity: 1 !important;
+}

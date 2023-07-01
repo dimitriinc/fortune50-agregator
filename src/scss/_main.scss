@@ -27,7 +27,7 @@ main {
         margin-right: 2rem;
         min-height: 100vh;
         transition: opacity 1s ease;
-        z-index: 999;
+        z-index: 800;
     
         @include breakpoint-down(desktop) {
             grid-template-columns: repeat(4, 1fr);

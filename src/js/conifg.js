@@ -5,6 +5,9 @@ export const DAYS_AGO_MONTH = 30
 export const DAYS_AGO_QUARTER = 90
 export const DAYS_AGO_YEAR = 365
 
+export const VISIBLE = 1
+export const HIDDEN = 0
+
 export const FIN_MODEL_PREP_BASE_URL = 'https://financialmodelingprep.com/api/v3/'
 export const FINNHUB_BASE_URL = 'https://finnhub.io/api/v1/stock/profile2'
 export const ALPHA_VANTAGE_BASE_URL = 'https://www.alphavantage.co/query'

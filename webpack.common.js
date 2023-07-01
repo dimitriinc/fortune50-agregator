@@ -11,9 +11,11 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             title: 'Fortune 50',
+            favicon: './src/images/favicon.ico'
+
         }),
         new MiniCssExtractPlugin({
-            filename: '[name].css'
+            filename: '[name].css',
         }),
     ],
 

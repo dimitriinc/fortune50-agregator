@@ -1,5 +1,6 @@
 import spinner from '../images/spinner.svg'
-import { stockExchanges } from './conifg'
+import { stockExchanges, VISIBLE, HIDDEN } from './conifg'
+
 
 class View {
 
@@ -9,6 +10,15 @@ class View {
     _myEmail
     _nyseBtn
     _nasdaqBtn
+    _overlay
+
+    renderOverlay() {
+        const html = `
+            <div class="overlay" data-visibility="${HIDDEN}"><div>
+        `
+        document.body.insertAdjacentHTML('afterbegin', html)
+        this._overlay = document.querySelector('.overlay')
+    }
 
     renderHeader() {
         const html = `
@@ -60,11 +70,11 @@ class View {
     renderCompany(company, index) {
         const marketCap = this._formatMarketCap(company.marketCap)
         const html = `
-            <div class="grid-item" data-symbol="${company.symbol}">
+            <div class="grid-item">
                 <div class="grid-item--rating">
                     <span class="grid-item--rating--content">${index + 1}</span>
                 </div>
-                <div class="grid-item--card">
+                <div class="grid-item--card" data-symbol="${company.symbol}">
                     <div class="grid-item--card--name">
                         <div class="grid-item--card--name--company-name">${company.companyName}</div>
                         <div class="grid-item--card--name--symbol">${company.symbol}</div>
@@ -74,6 +84,19 @@ class View {
             </div> 
         `
         this._gridContainer.insertAdjacentHTML('beforeend', html)
+    }
+
+    renderCompanySelected(company) {
+        const html = `
+            <div class="overlay--double">
+                <div class="selected-container">
+                    <div class="selected--head">
+                        ${324+234}
+                    </div>
+                </div>
+            </div>
+        `
+        this._overlay.insertAdjacentHTML('afterbegin', html)
     }
 
     renderSpinner() {
@@ -122,8 +145,40 @@ class View {
     addExchangeHandler(handler) {
         document.querySelectorAll('.btn-exchange').forEach(btn => {
             btn.addEventListener('click', () => {
+                [this._nyseBtn, this._nasdaqBtn].forEach(el => {
+                    el.classList.remove('active')
+                })
                 handler(btn.dataset.mic)
             })
+        })
+    }
+
+    addSelectHandler(handler) {
+        document.body.addEventListener('click', event => {
+            const card = event.target.closest('.grid-item--card')
+            if (!card) return
+
+            this._overlay.classList.add('visible')
+            this._overlay.dataset.visibility = VISIBLE
+            document.body.setAttribute('style', 'overflow:hidden')
+            
+            handler(card.dataset.symbol)
+        })
+    }
+
+    addDeselectHandler() {
+        document.addEventListener('keydown', event => {
+
+            if (event.key !== 'Escape') return
+            if (+this._overlay.dataset.visibility === HIDDEN) return
+
+            this._overlay.dataset.visibility = HIDDEN
+            this._overlay.classList.remove('visible')
+            this._overlay.firstElementChild.remove()
+
+            document.body.removeAttribute('style')
+
+
         })
     }
 
