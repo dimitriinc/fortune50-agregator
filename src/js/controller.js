@@ -12,7 +12,7 @@ async function init() {
     view.renderFooter()
 
     window.addEventListener('hashchange', onHashChange)
-    window.location.hash = stockExchanges.newYorkStockExchange
+    window.location.hash = stockExchanges.nasdaq
     onHashChange()
 
     view.addExchangeHandler(controlExchangeButtons)
@@ -46,10 +46,15 @@ function controlExchangeButtons(mic) {
 }
 
 async function controlSelect(symbol) {
-    console.log(`SYMBOL received:: ${symbol}`)
-    const company = await model.fetchCompanyOverview(symbol)
-    console.log(company)
-    view.renderCompanySelected(company)
+    try {
+        console.log(`SYMBOL received:: ${symbol}`)
+        view.renderSelectedCard()
+        await model.fetchCompanyOverview(symbol)
+        console.dir(model.state.selectedCompany)
+        view.renderCompanySelected(model.state.selectedCompany)
+    } catch (error) {
+        view.renderError(error.message)
+    }
 }
 
 

@@ -18,13 +18,40 @@
         background: transparent;
         justify-content: center;
         align-items: center;
+        z-index: 950;
 
-        .selected-container {
-            width: 80vw;
-            height: 80vh;
-            background-color: $secondary_background_color;
-            border-radius: 20px;
+        .selected {
 
+            &-container {
+                width: 80vw;
+                height: 80vh;
+                background-color: $secondary_background_color;
+                border: 1px solid $text_color;
+                border-radius: 20px;
+                position: relative;
+                z-index: 960;
+
+                .selected--spinner {
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    top: 45%;
+                    margin-left: auto;
+                    margin-right: auto;
+                    transition: all .5s ease;
+                }
+    
+                .selected--head {
+                    
+                    margin-top: 1rem;
+                    padding: 1rem;
+                    font-size: 2rem;
+                    text-align: center;
+                }
+    
+            }
         }
+
+        
     }
 }

@@ -11,6 +11,7 @@ class View {
     _nyseBtn
     _nasdaqBtn
     _overlay
+    _blankSelectedCard
 
     renderOverlay() {
         const html = `
@@ -18,6 +19,7 @@ class View {
         `
         document.body.insertAdjacentHTML('afterbegin', html)
         this._overlay = document.querySelector('.overlay')
+
     }
 
     renderHeader() {
@@ -86,17 +88,30 @@ class View {
         this._gridContainer.insertAdjacentHTML('beforeend', html)
     }
 
-    renderCompanySelected(company) {
+    renderSelectedCard() {
         const html = `
             <div class="overlay--double">
                 <div class="selected-container">
-                    <div class="selected--head">
-                        ${324+234}
-                    </div>
+                    <img class="selected--spinner" src="${spinner}">
                 </div>
             </div>
         `
         this._overlay.insertAdjacentHTML('afterbegin', html)
+        this._blankSelectedCard = document.querySelector('.selected-container')
+        document.querySelector('.overlay--double').addEventListener('click', event => {
+            if (!event.target.classList.contains('overlay--double')) return
+            this._exitSelectedMode()
+        })
+    }
+
+    renderCompanySelected(company) {
+        const html = `
+            <div class="selected--head">
+                ${company.Name}
+            </div>
+        `
+        this._blankSelectedCard.querySelector('.selected--spinner').classList.add('hidden')
+        this._blankSelectedCard.insertAdjacentHTML('afterbegin', html)
     }
 
     renderSpinner() {
@@ -105,6 +120,7 @@ class View {
         this.emptyGridContainer()
         this._spinner.setAttribute('style', 'opacity: 1')
     }
+
 
     renderError(message) {
         this.hideSpinner()
@@ -168,18 +184,18 @@ class View {
 
     addDeselectHandler() {
         document.addEventListener('keydown', event => {
-
             if (event.key !== 'Escape') return
             if (+this._overlay.dataset.visibility === HIDDEN) return
-
-            this._overlay.dataset.visibility = HIDDEN
-            this._overlay.classList.remove('visible')
-            this._overlay.firstElementChild.remove()
-
-            document.body.removeAttribute('style')
-
-
+            this._exitSelectedMode()
         })
+    }
+
+    _exitSelectedMode() {
+        this._overlay.dataset.visibility = HIDDEN
+        this._overlay.classList.remove('visible')
+        this._overlay.firstElementChild.remove()
+
+        document.body.removeAttribute('style')
     }
 
     _formatMarketCap(marketCap) {

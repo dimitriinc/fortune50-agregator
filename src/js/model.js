@@ -23,6 +23,7 @@ export const fetchCompanyProfile = async function(symbol) {
     try {
         const url = helpers.getFinModelPrepProfilerUrl(symbol)
         const data = await helpers.AJAX(url)
+        console.log(data[0]);
         state.selectedCompany = data[0]
         console.log(state.selectedCompany)
     } catch (error) {
@@ -34,6 +35,7 @@ export const fetchCompanyOverview = async function(symbol) {
     try {
         const url = helpers.getAlphaVantageOverviewUrl(symbol)
         const data = await helpers.AJAX(url)
+        console.log(data);
         state.selectedCompany = data
     } catch (error) {
         throw error

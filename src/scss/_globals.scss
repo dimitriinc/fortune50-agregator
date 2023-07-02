@@ -28,6 +28,7 @@ html {
 body {
     padding: 0;
     margin-bottom: 0;
+    color: $text_color;
     background-color: $background_color;
     font-family: eurostile;
 }
@@ -43,4 +44,9 @@ body {
 .visible {
     visibility: visible !important;
     opacity: 1 !important;
+}
+
+.hidden {
+    visibility: hidden !important;
+    opacity: 0 !important;
 }
