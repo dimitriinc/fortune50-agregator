@@ -4,9 +4,10 @@ export const state = {
     companies: [],
     selectedCompany: {},
     companyLogoUrl: '',
-    todayTimestamp: 0,
-    pastTimestamp: 0,
+    today: 0,
+    dayInPast: 0,
     stockPrices: [],
+    compressedStockPrices: [],
 }
 
 export const fetchCompaniesRating = async function(exchange) {
@@ -54,17 +55,18 @@ export const fetchCompanyLogo = async function(symbol) {
 
 export const fetchStockPrices = async function(symbol) {
     try {
-        const url = helpers.getPolygonAggregateUrl(symbol, state.todayTimestamp, state.pastTimestamp)
+        const url = helpers.getPolygonAggregateUrl(symbol, state.dayInPast.getTime(), state.today.getTime())
         const data = await helpers.AJAX(url)
-        state.stockPrices = data.results
-        console.log(state.stockPrices)
+        const stockPrices = data.results.map(obj => obj.c)
+        state.compressedStockPrices = helpers.compressStockPrices(stockPrices)
+        console.log(state.compressedStockPrices)
     } catch (error) {
         throw error
     }
 }
 
-export const setTimestamps = function(daysAgo) {
-    const timestamps = helpers.getTimestamps(daysAgo)
-    state.todayTimestamp = timestamps[0]
-    state.pastTimestamp = timestamps[1]
+export const setDates = function(daysAgo) {
+    const dates = helpers.getDates(daysAgo)
+    state.dayInPast = dates[0]
+    state.today = dates[1]
 }

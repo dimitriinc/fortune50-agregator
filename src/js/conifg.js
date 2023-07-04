@@ -1,5 +1,6 @@
 export const LIMIT = 50
 export const TIMEOUT_SEC = 10
+export const COMPRESSED_SIZE = 10
 
 export const DAYS_AGO_MONTH = 30
 export const DAYS_AGO_QUARTER = 90

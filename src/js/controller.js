@@ -2,7 +2,7 @@ import '../scss/style.scss'
 import * as model from './model'
 import view from './view'
 import { stockExchanges } from './conifg'
-import { DAYS_AGO_MONTH, DAYS_AGO_QUARTER, DAYS_AGO_YEAR, SHOW_EMAIL, SHOW_SIGNATURE } from './conifg'
+import { DAYS_AGO_MONTH, DAYS_AGO_QUARTER, DAYS_AGO_YEAR} from './conifg'
 
 async function init() {
 
@@ -13,13 +13,13 @@ async function init() {
 
     window.addEventListener('hashchange', onHashChange)
     window.location.hash = stockExchanges.nasdaq
-    onHashChange()
+    await onHashChange()
 
     view.addExchangeHandler(controlExchangeButtons)
     view.addSelectHandler(controlSelect)
     view.addDeselectHandler()
     
-    model.setTimestamps(DAYS_AGO_MONTH)    
+    model.setDates(DAYS_AGO_MONTH)    
     model.fetchStockPrices("GOOG")
 }
 
