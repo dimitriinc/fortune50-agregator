@@ -6,25 +6,43 @@ import { DAYS_AGO_MONTH, DAYS_AGO_QUARTER, DAYS_AGO_YEAR} from './conifg'
 
 async function init() {
 
-    view.renderOverlay()
-    view.renderHeader()
-    view.renderMain()
-    view.renderFooter()
+    try {
+        model.actualizeStateOnInit()
+        model.setDates(DAYS_AGO_MONTH)    
 
-    window.addEventListener('hashchange', onHashChange)
-    window.location.hash = stockExchanges.nasdaq
-    await onHashChange()
+        view.renderOverlay()
+        view.renderHeader()
+        view.renderMain()
+        view.renderFooter()
 
-    view.addExchangeHandler(controlExchangeButtons)
-    view.addSelectHandler(controlSelect)
-    view.addDeselectHandler()
+        console.log(model.state.modeSelected);
+
+        if (model.state.modeSelected) await controlSelect(model.state.selectedCompany.Symbol)
+
+        view.addHashHandler(controlHashChange)
+
+        // await onHashChange()
+
+        view.addExchangeHandler(controlExchangeButtons)
+        view.addSelectHandler(controlSelect, controlDeselect)
+        view.addDeselectHandler(controlDeselect)
+        
+        window.location.hash = model.state.selectedExchange
+
+        await controlHashChange()
+
+        // model.fetchStockPrices("GOOG")
+    } catch (error) {
+        console.error(error)
+        view.renderError(error.message)
+    }
+
     
-    model.setDates(DAYS_AGO_MONTH)    
-    model.fetchStockPrices("GOOG")
 }
 
-async function onHashChange() {
+async function controlHashChange() {
     try {
+
         view.renderSpinner()
         const stockExchange = window.location.hash.slice(1)
         await model.fetchCompaniesRating(stockExchange)
@@ -33,8 +51,10 @@ async function onHashChange() {
         model.state.companies.forEach((company, index) => {
             view.renderCompany(company, index)
         })
+
         view.showGrid()
         view.hideSpinner()
+
     } catch (error) {
         console.error(error)
         view.renderError(error.message)
@@ -50,11 +70,19 @@ async function controlSelect(symbol) {
         console.log(`SYMBOL received:: ${symbol}`)
         view.renderSelectedCard()
         await model.fetchCompanyOverview(symbol)
-        console.dir(model.state.selectedCompany)
         view.renderCompanySelected(model.state.selectedCompany)
+        model.persistSelectedMode(true)
+        console.log(model.state.selectedCompany)
     } catch (error) {
         view.renderError(error.message)
     }
+}
+
+function controlDeselect() {
+    console.log('We are inside the control deselect!!!');
+    view.exitSelectedMode()
+    model.persistSelectedMode(false)
+    console.log('We are inside the control deselect!!!');
 }
 
 

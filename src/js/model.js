@@ -1,13 +1,20 @@
 import * as helpers from './helpers'
+import { SELECT_MODE, SELECT_COMPANY, SELECT_EXCHANGE, stockExchanges } from './conifg'
 
 export const state = {
     companies: [],
     selectedCompany: {},
-    companyLogoUrl: '',
-    today: 0,
-    dayInPast: 0,
-    stockPrices: [],
+    selectedExchange: stockExchanges.nasdaq,
+    today: undefined,
+    dayInPast: undefined,
     compressedStockPrices: [],
+    modeSelected: false,
+}
+
+export const setDates = function(daysAgo) {
+    const dates = helpers.getDates(daysAgo)
+    state.dayInPast = dates[0]
+    state.today = dates[1]
 }
 
 export const fetchCompaniesRating = async function(exchange) {
@@ -15,6 +22,8 @@ export const fetchCompaniesRating = async function(exchange) {
         const url = helpers.getFinModelPrepScreenerUrl(exchange)
         const data = await helpers.AJAX(url)
         state.companies = data
+        state.selectedExchange = exchange
+        persistSelectedExchange()
     } catch (error) {
         throw error
     }
@@ -24,9 +33,8 @@ export const fetchCompanyProfile = async function(symbol) {
     try {
         const url = helpers.getFinModelPrepProfilerUrl(symbol)
         const data = await helpers.AJAX(url)
-        console.log(data[0]);
         state.selectedCompany = data[0]
-        console.log(state.selectedCompany)
+        persistSelectedCompany()
     } catch (error) {
         throw error
     }
@@ -36,19 +44,9 @@ export const fetchCompanyOverview = async function(symbol) {
     try {
         const url = helpers.getAlphaVantageOverviewUrl(symbol)
         const data = await helpers.AJAX(url)
-        console.log(data);
         state.selectedCompany = data
+        persistSelectedCompany()
     } catch (error) {
-        throw error
-    }
-}
-
-export const fetchCompanyLogo = async function(symbol) {
-    try {
-        const url = helpers.getFinnhubProfileUrl(symbol)
-        const data = await helpers.AJAX(url)
-        state.companyLogoUrl = data.logoadjusted=false
-    } catch(error) {
         throw error
     }
 }
@@ -65,8 +63,30 @@ export const fetchStockPrices = async function(symbol) {
     }
 }
 
-export const setDates = function(daysAgo) {
-    const dates = helpers.getDates(daysAgo)
-    state.dayInPast = dates[0]
-    state.today = dates[1]
+export const persistSelectedMode = function(selected) {
+    localStorage.setItem(SELECT_MODE, String(selected))
+    state.modeSelected = selected
+}
+
+export const persistSelectedCompany = function() {
+    localStorage.setItem(SELECT_COMPANY, JSON.stringify(state.selectedCompany))
+}
+
+export const persistSelectedExchange = function(exchange) {
+    localStorage.setItem(SELECT_EXCHANGE, exchange)
+}
+
+export const actualizeStateOnInit = function () {
+    try {
+        localStorage.getItem(SELECT_MODE) === 'true' ? state.modeSelected = true : state.modeSelected = false
+        const company = localStorage.getItem(SELECT_COMPANY)
+        if (company) state.selectedCompany = JSON.parse(company)
+        const exchange = localStorage.getItem(SELECT_EXCHANGE)
+        exchange !== 'undefined' ? state.selectedExchange = exchange : state.selectedExchange = stockExchanges.nasdaq
+    } catch(error) {
+        console.error(error)
+        throw new Error(error.message)
+        
+    }
+    
 }

@@ -98,16 +98,18 @@ class View {
         `
         this._overlay.insertAdjacentHTML('afterbegin', html)
         this._blankSelectedCard = document.querySelector('.selected-container')
-        document.querySelector('.overlay--double').addEventListener('click', event => {
-            if (!event.target.classList.contains('overlay--double')) return
-            this._exitSelectedMode()
-        })
+        
     }
 
     renderCompanySelected(company) {
         const html = `
             <div class="selected--head">
                 ${company.Name}
+            </div>
+            <div class="selected--options">
+                <div class="selected--options-option" id="options-graph">Graph</div>
+                <div class="selected--options-option" id="options-info">Info</div>
+                <div class="selected--options-option" id="options-stats">Stats</div>
             </div>
         `
         this._blankSelectedCard.querySelector('.selected--spinner').classList.add('hidden')
@@ -158,9 +160,15 @@ class View {
         }
     }
 
+    addHashHandler(handler) {
+        window.addEventListener('hashchange', handler)
+    }
+
     addExchangeHandler(handler) {
         document.querySelectorAll('.btn-exchange').forEach(btn => {
             btn.addEventListener('click', () => {
+
+                // reset the highlightning of the buttons
                 [this._nyseBtn, this._nasdaqBtn].forEach(el => {
                     el.classList.remove('active')
                 })
@@ -169,7 +177,7 @@ class View {
         })
     }
 
-    addSelectHandler(handler) {
+    addSelectHandler(handler, deselectHandler) {
         document.body.addEventListener('click', event => {
             const card = event.target.closest('.grid-item--card')
             if (!card) return
@@ -180,17 +188,23 @@ class View {
             
             handler(card.dataset.symbol)
         })
-    }
 
-    addDeselectHandler() {
-        document.addEventListener('keydown', event => {
-            if (event.key !== 'Escape') return
-            if (+this._overlay.dataset.visibility === HIDDEN) return
-            this._exitSelectedMode()
+        document.querySelector('.overlay--double').addEventListener('click', event => {
+            if (!event.target.classList.contains('overlay--double')) return
+            deselectHandler()
         })
     }
 
-    _exitSelectedMode() {
+    addDeselectHandler(handler) {
+        document.addEventListener('keydown', event => {
+            if (event.key !== 'Escape') return
+            handler(event)
+        })
+    }
+
+    exitSelectedMode() {
+        if (+this._overlay.dataset.visibility === HIDDEN) return
+
         this._overlay.dataset.visibility = HIDDEN
         this._overlay.classList.remove('visible')
         this._overlay.firstElementChild.remove()

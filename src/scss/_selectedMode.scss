@@ -41,12 +41,24 @@
                     transition: all .5s ease;
                 }
     
-                .selected--head {
-                    
+                .selected--head {     
                     margin-top: 1rem;
                     padding: 1rem;
                     font-size: 2rem;
                     text-align: center;
+                }
+
+                .selected--options {
+                    display: flex;
+
+                    &-option {
+                        
+                    }
+
+                }
+
+                .selected--display {
+
                 }
     
             }
