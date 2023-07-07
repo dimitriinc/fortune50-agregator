@@ -1,7 +1,6 @@
 import '../scss/style.scss'
 import * as model from './model'
 import view from './view'
-import { stockExchanges } from './conifg'
 import { DAYS_AGO_MONTH, DAYS_AGO_QUARTER, DAYS_AGO_YEAR} from './conifg'
 
 async function init() {
@@ -15,14 +14,12 @@ async function init() {
         view.renderMain()
         view.renderFooter()
 
-        console.log(model.state.modeSelected);
-
-        if (model.state.modeSelected) await controlSelect(model.state.selectedCompany.Symbol)
+        if (model.state.modeSelected) {
+            view.enterSelectedMode()
+            await controlSelect(model.state.selectedCompany.Symbol)
+        }
 
         view.addHashHandler(controlHashChange)
-
-        // await onHashChange()
-
         view.addExchangeHandler(controlExchangeButtons)
         view.addSelectHandler(controlSelect, controlDeselect)
         view.addDeselectHandler(controlDeselect)
@@ -47,6 +44,8 @@ async function controlHashChange() {
         const stockExchange = window.location.hash.slice(1)
         await model.fetchCompaniesRating(stockExchange)
 
+        model.persistSelectedExchange(stockExchange)
+
         view.highlightExchange(stockExchange)
         model.state.companies.forEach((company, index) => {
             view.renderCompany(company, index)
@@ -58,6 +57,7 @@ async function controlHashChange() {
     } catch (error) {
         console.error(error)
         view.renderError(error.message)
+        history.replaceState({}, document.title, window.location.href.split('#')[0])
     }
 }
 
@@ -67,22 +67,20 @@ function controlExchangeButtons(mic) {
 
 async function controlSelect(symbol) {
     try {
-        console.log(`SYMBOL received:: ${symbol}`)
         view.renderSelectedCard()
         await model.fetchCompanyOverview(symbol)
         view.renderCompanySelected(model.state.selectedCompany)
         model.persistSelectedMode(true)
-        console.log(model.state.selectedCompany)
     } catch (error) {
-        view.renderError(error.message)
+        console.log(`ERROR!!! ${error}`);
+        view.renderSelectError(error.message)
+        model.persistSelectedMode(true)
     }
 }
 
 function controlDeselect() {
-    console.log('We are inside the control deselect!!!');
     view.exitSelectedMode()
     model.persistSelectedMode(false)
-    console.log('We are inside the control deselect!!!');
 }
 
 

@@ -13,12 +13,6 @@ main {
         z-index: 0;
     }
 
-    .error-message {
-        text-align: center;
-        margin-top: 9rem;
-        transition: opacity .5s ease;
-    }
-
     .grid-container {
         display: grid;
         grid-template-columns: repeat(5, 1fr);

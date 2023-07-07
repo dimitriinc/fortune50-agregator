@@ -81,6 +81,7 @@ export const actualizeStateOnInit = function () {
         localStorage.getItem(SELECT_MODE) === 'true' ? state.modeSelected = true : state.modeSelected = false
         const company = localStorage.getItem(SELECT_COMPANY)
         if (company) state.selectedCompany = JSON.parse(company)
+
         const exchange = localStorage.getItem(SELECT_EXCHANGE)
         exchange !== 'undefined' ? state.selectedExchange = exchange : state.selectedExchange = stockExchanges.nasdaq
     } catch(error) {

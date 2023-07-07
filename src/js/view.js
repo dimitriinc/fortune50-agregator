@@ -1,3 +1,4 @@
+import { takeWhile } from 'lodash'
 import spinner from '../images/spinner.svg'
 import { stockExchanges, VISIBLE, HIDDEN } from './conifg'
 
@@ -11,14 +12,18 @@ class View {
     _nyseBtn
     _nasdaqBtn
     _overlay
+    _overlayDouble
     _blankSelectedCard
 
     renderOverlay() {
         const html = `
-            <div class="overlay" data-visibility="${HIDDEN}"><div>
+            <div class="overlay" data-visibility="${HIDDEN}">
+                <div class="overlay--double hidden"></div>
+            <div>
         `
         document.body.insertAdjacentHTML('afterbegin', html)
         this._overlay = document.querySelector('.overlay')
+        this._overlayDouble = document.querySelector('.overlay--double')
 
     }
 
@@ -90,13 +95,11 @@ class View {
 
     renderSelectedCard() {
         const html = `
-            <div class="overlay--double">
-                <div class="selected-container">
-                    <img class="selected--spinner" src="${spinner}">
-                </div>
+            <div class="selected-container">
+                <img class="selected--spinner" src="${spinner}">
             </div>
         `
-        this._overlay.insertAdjacentHTML('afterbegin', html)
+        this._overlayDouble.insertAdjacentHTML('afterbegin', html)
         this._blankSelectedCard = document.querySelector('.selected-container')
         
     }
@@ -127,6 +130,7 @@ class View {
     renderError(message) {
         this.hideSpinner()
         this.emptyGridContainer()
+
         const html = `
             <div class="error-message" style="opacity:0">
                 ${message}
@@ -134,6 +138,26 @@ class View {
         `
         document.querySelector('main').insertAdjacentHTML('afterbegin', html)
         document.querySelector('.error-message').setAttribute('style', 'opacity:1')
+        this.exitSelectedMode()
+    }
+
+    renderSelectError(message) {
+        this._blankSelectedCard.innerHTML = ''
+        const html = `
+            <div class="error-message" style="opacity:0">
+                ${message}
+            </div>
+        `
+        console.log('HTML CREATED!!!');
+        try {
+            console.log(this._blankSelectedCard);
+            this._blankSelectedCard.insertAdjacentHTML('afterbegin', html)
+            document.querySelector('.error-message').setAttribute('style', 'opacity:1')
+            console.log('INSERT SUCCESSFUL!!!!');
+        } catch(error) {
+            console.error(error)
+        }
+        
     }
 
     showGrid() {
@@ -172,6 +196,7 @@ class View {
                 [this._nyseBtn, this._nasdaqBtn].forEach(el => {
                     el.classList.remove('active')
                 })
+
                 handler(btn.dataset.mic)
             })
         })
@@ -182,14 +207,12 @@ class View {
             const card = event.target.closest('.grid-item--card')
             if (!card) return
 
-            this._overlay.classList.add('visible')
-            this._overlay.dataset.visibility = VISIBLE
-            document.body.setAttribute('style', 'overflow:hidden')
+            this.enterSelectedMode()
             
             handler(card.dataset.symbol)
         })
 
-        document.querySelector('.overlay--double').addEventListener('click', event => {
+        this._overlayDouble.addEventListener('click', event => {
             if (!event.target.classList.contains('overlay--double')) return
             deselectHandler()
         })
@@ -202,12 +225,21 @@ class View {
         })
     }
 
+    enterSelectedMode() {
+        this._overlay.classList.add('visible')
+        this._overlayDouble.classList.remove('hidden')
+        this._overlay.dataset.visibility = VISIBLE
+        document.body.setAttribute('style', 'overflow:hidden')
+    }
+
     exitSelectedMode() {
         if (+this._overlay.dataset.visibility === HIDDEN) return
 
         this._overlay.dataset.visibility = HIDDEN
         this._overlay.classList.remove('visible')
-        this._overlay.firstElementChild.remove()
+        this._overlayDouble.classList.add('hidden')
+        this._overlayDouble.innerHTML = ''
+        // this._overlay.firstElementChild.remove()
 
         document.body.removeAttribute('style')
     }
