@@ -23,6 +23,8 @@ async function init() {
         view.addExchangeHandler(controlExchangeButtons)
         view.addSelectHandler(controlSelect, controlDeselect)
         view.addDeselectHandler(controlDeselect)
+        view.addSelectedOptionsHandler(controlSelectOptions)
+        view.addGraphOptionsHandler(controlGraphOptions)
         
         window.location.hash = model.state.selectedExchange
 
@@ -84,6 +86,15 @@ async function controlSelect(symbol) {
 function controlDeselect() {
     view.exitSelectedMode()
     model.persistSelectedMode(false)
+}
+
+function controlSelectOptions(viewID, buttonID) {
+    view.desactivateSelectOptions(buttonID)
+    view.displaySelectedOptionView(viewID)
+}
+
+function controlGraphOptions(daysSpan, buttonID) {
+    view.desactivateGraphOptions(buttonID)
 }
 
 

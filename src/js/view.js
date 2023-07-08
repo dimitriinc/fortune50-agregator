@@ -112,19 +112,27 @@ class View {
                     ${company.Name}
                 </div>
                 <div class="selected--options">
-                    <div class="selected--options-option" id="options-graph">Graph</div>
-                    <div class="selected--options-option" id="options-info">Info</div>
-                    <div class="selected--options-option" id="options-stats">Stats</div>
+                    <div class="selected--options-option active" id="options-graph" data-view-id="display-view--graph">Graph</div>
+                    <div class="selected--options-option" id="options-info" data-view-id="display-view--info">Info</div>
+                    <div class="selected--options-option" id="options-stats" data-view-id="display-view--stats">Stats</div>
                 </div>
                 <div class="selected--display">
                     <div class="selected--display-view visible" id="display-view--graph">
-                        <div class="view--graph-img">
-                            <img src="${graphImg}" alt="graph">
-                        </div>
+                        <div class="view--graph-img"></div>
                         <div class="view--graph-buttons">
-                            <div class="view--graph-buttons--button" id="graph-button--month>
-                            <div class="view--graph-buttons--button" id="graph-button--quarter>
-                            <div class="view--graph-buttons--button" id="graph-button--year>
+                            <div class="view--graph-buttons--button active" id="graph-button--month" data-days-span="30">Month</div>
+                            <div class="view--graph-buttons--button" id="graph-button--quarter" data-days-span="90">Quarter</div>
+                            <div class="view--graph-buttons--button" id="graph-button--year" data-days-span="365">Year</div>
+                        </div>
+                    </div>
+                    <div class="selected--display-view hidden" id="display-view--info">
+                        <div class="view--info-about">
+                            ${company.Description}
+                        </div>
+                    </div>
+                    <div class="selected--display-view hidden" id="display-view--stats">
+                        <div class="view--stats">
+                            Dummy text
                         </div>
                     </div>
                 </div>
@@ -132,6 +140,9 @@ class View {
         `
         this._blankSelectedCard.querySelector('.selected--spinner').classList.add('hidden')
         this._blankSelectedCard.insertAdjacentHTML('afterbegin', html)
+        this._blankSelectedCard.querySelectorAll('.selected--options-option').forEach(button => {
+
+        })
     }
 
     renderSpinner() {
@@ -240,6 +251,22 @@ class View {
         })
     }
 
+    addSelectedOptionsHandler(handler) {
+        document.addEventListener('click', event => {
+            const button = event.target.closest('.selected--options-option')
+            if (!button) return
+            handler(button.dataset.viewId, button.id)
+        }) 
+    }
+
+    addGraphOptionsHandler(handler) {
+        document.addEventListener('click', event => {
+            const button = event.target.closest('.view--graph-buttons--button')
+            if (!button) return
+            handler(button.dataset.daysSpan, button.id)
+        })
+    }
+
     enterSelectedMode() {
         this._overlay.classList.add('visible')
         this._overlayDouble.classList.remove('hidden')
@@ -257,6 +284,32 @@ class View {
         // this._overlay.firstElementChild.remove()
 
         document.body.removeAttribute('style')
+    }
+
+    desactivateSelectOptions(optionID) {
+        document.querySelectorAll('.selected--options-option').forEach(button => {
+            button.classList.remove('active')
+            if (button.id === optionID) button.classList.add('active')
+        })
+    }
+
+    displaySelectedOptionView(viewID) {
+        document.querySelectorAll('.selected--display-view').forEach(view => {
+            view.classList.remove('visible')
+            view.classList.add('hidden')
+            if (view.id === viewID) {
+                view.classList.remove('hidden')
+                view.classList.add('visible')
+            }
+
+        })
+    }
+
+    desactivateGraphOptions(optionID) {
+        document.querySelectorAll('.view--graph-buttons--button').forEach(button => {
+            button.classList.remove('active')
+            if (button.id === optionID) button.classList.add('active')
+        })
     }
 
     _formatMarketCap(marketCap) {

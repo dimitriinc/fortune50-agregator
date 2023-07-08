@@ -47,6 +47,8 @@ export const fetchCompanyOverview = async function(symbol) {
         state.selectedCompany = data
         persistSelectedCompany()
 
+        console.log(data);
+
         if (Object.keys(data).length === 0) throw new Error("The company's data can't be reached")
 
     } catch (error) {
