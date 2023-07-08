@@ -46,6 +46,9 @@ export const fetchCompanyOverview = async function(symbol) {
         const data = await helpers.AJAX(url)
         state.selectedCompany = data
         persistSelectedCompany()
+
+        if (Object.keys(data).length === 0) throw new Error("The company's data can't be reached")
+
     } catch (error) {
         throw error
     }
@@ -55,6 +58,9 @@ export const fetchStockPrices = async function(symbol) {
     try {
         const url = helpers.getPolygonAggregateUrl(symbol, state.dayInPast.getTime(), state.today.getTime())
         const data = await helpers.AJAX(url)
+
+        if (!data.results) throw new Error("The company's stock prices can't be accessed")
+        
         const stockPrices = data.results.map(obj => obj.c)
         state.compressedStockPrices = helpers.compressStockPrices(stockPrices)
         console.log(state.compressedStockPrices)

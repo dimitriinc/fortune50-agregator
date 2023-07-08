@@ -1,5 +1,5 @@
 export const LIMIT = 50
-export const TIMEOUT_SEC = 1
+export const TIMEOUT_SEC = 10
 export const COMPRESSED_SIZE = 10
 
 export const SELECT_MODE = 'select_mode'

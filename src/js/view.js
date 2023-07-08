@@ -1,5 +1,6 @@
 import { takeWhile } from 'lodash'
 import spinner from '../images/spinner.svg'
+import graphImg from '../images/stonks.jpg'
 import { stockExchanges, VISIBLE, HIDDEN } from './conifg'
 
 
@@ -106,13 +107,27 @@ class View {
 
     renderCompanySelected(company) {
         const html = `
-            <div class="selected--head">
-                ${company.Name}
-            </div>
-            <div class="selected--options">
-                <div class="selected--options-option" id="options-graph">Graph</div>
-                <div class="selected--options-option" id="options-info">Info</div>
-                <div class="selected--options-option" id="options-stats">Stats</div>
+            <div class="selected-container--overlay">
+                <div class="selected--head">
+                    ${company.Name}
+                </div>
+                <div class="selected--options">
+                    <div class="selected--options-option" id="options-graph">Graph</div>
+                    <div class="selected--options-option" id="options-info">Info</div>
+                    <div class="selected--options-option" id="options-stats">Stats</div>
+                </div>
+                <div class="selected--display">
+                    <div class="selected--display-view visible" id="display-view--graph">
+                        <div class="view--graph-img">
+                            <img src="${graphImg}" alt="graph">
+                        </div>
+                        <div class="view--graph-buttons">
+                            <div class="view--graph-buttons--button" id="graph-button--month>
+                            <div class="view--graph-buttons--button" id="graph-button--quarter>
+                            <div class="view--graph-buttons--button" id="graph-button--year>
+                        </div>
+                    </div>
+                </div>
             </div>
         `
         this._blankSelectedCard.querySelector('.selected--spinner').classList.add('hidden')
@@ -131,6 +146,9 @@ class View {
         this.hideSpinner()
         this.emptyGridContainer()
 
+        // Ensure there are no duplicate errors
+        document.querySelectorAll('.error-message').forEach(el => el.remove())
+
         const html = `
             <div class="error-message" style="opacity:0">
                 ${message}
@@ -148,12 +166,9 @@ class View {
                 ${message}
             </div>
         `
-        console.log('HTML CREATED!!!');
         try {
-            console.log(this._blankSelectedCard);
             this._blankSelectedCard.insertAdjacentHTML('afterbegin', html)
             document.querySelector('.error-message').setAttribute('style', 'opacity:1')
-            console.log('INSERT SUCCESSFUL!!!!');
         } catch(error) {
             console.error(error)
         }

@@ -28,7 +28,6 @@ async function init() {
 
         await controlHashChange()
 
-        // model.fetchStockPrices("GOOG")
     } catch (error) {
         console.error(error)
         view.renderError(error.message)
@@ -38,10 +37,15 @@ async function init() {
 }
 
 async function controlHashChange() {
+
+    const stockExchange = window.location.hash.slice(1)
+    if (!stockExchange) return
+
     try {
 
         view.renderSpinner()
-        const stockExchange = window.location.hash.slice(1)
+        
+
         await model.fetchCompaniesRating(stockExchange)
 
         model.persistSelectedExchange(stockExchange)
@@ -55,9 +59,9 @@ async function controlHashChange() {
         view.hideSpinner()
 
     } catch (error) {
-        console.error(error)
         view.renderError(error.message)
         history.replaceState({}, document.title, window.location.href.split('#')[0])
+        model.persistSelectedMode(false)
     }
 }
 
@@ -68,13 +72,12 @@ function controlExchangeButtons(mic) {
 async function controlSelect(symbol) {
     try {
         view.renderSelectedCard()
-        await model.fetchCompanyOverview(symbol)
+        await Promise.all([model.fetchCompanyOverview(symbol), model.fetchStockPrices(symbol)])
         view.renderCompanySelected(model.state.selectedCompany)
         model.persistSelectedMode(true)
     } catch (error) {
-        console.log(`ERROR!!! ${error}`);
         view.renderSelectError(error.message)
-        model.persistSelectedMode(true)
+        model.persistSelectedMode(false)
     }
 }
 
