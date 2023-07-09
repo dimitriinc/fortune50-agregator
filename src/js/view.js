@@ -1,6 +1,4 @@
-import { takeWhile } from 'lodash'
 import spinner from '../images/spinner.svg'
-import graphImg from '../images/stonks.jpg'
 import { stockExchanges, VISIBLE, HIDDEN } from './conifg'
 
 
@@ -129,10 +127,22 @@ class View {
                         <div class="view--info-about">
                             ${company.Description}
                         </div>
+                        <div class="view--info-container">
+                            <div class="view--info-item">
+                                <p class="data-label">Sector</p>
+                                <p class="data-content">${this._capitalizeString(company.Sector)}</p>
+                            </div>
+                            <div class="view--info-item">
+                                <p class="data-label">Address</p>
+                                <p class="data-content">${this._capitalizeWords(company.Address)}</p>
+                            </div>
+                        </div>
                     </div>
                     <div class="selected--display-view hidden" id="display-view--stats">
-                        <div class="view--stats">
-                            Dummy text
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                Dummy text
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -326,6 +336,20 @@ class View {
         this._myEmail.classList.toggle('emerged')
         this._mySingature.classList.toggle('emerged')
         this._mySingature.classList.toggle('submerged')
+    }
+
+    _capitalizeString(string) {
+        const newString = string.charAt(0).toUpperCase() + string.substring(1).toLowerCase()
+        return newString
+    }
+
+    _capitalizeWords(string) {
+        const words = string.split(' ')
+        const capitalizedWords = words.map(word => {
+            if (!(word.length > 3)) return word
+            return this._capitalizeString(word)
+        })
+        return capitalizedWords.join(' ')
     }
 }
 

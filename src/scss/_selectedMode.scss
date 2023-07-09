@@ -10,6 +10,7 @@
     visibility: hidden;
     opacity: 0;
     transition: all .5s ease;
+    text-align: center;
 
     &--double {
         display: flex;
@@ -74,6 +75,25 @@
                             cursor: pointer;
                             transition: all .5s ease;
 
+                            @include breakpoint-down(mobile) {
+                                padding: .5rem;
+                                margin: .5rem;
+                                font-size: 14px;
+                            }
+
+                            &::after {
+                                content: '';
+                                position: absolute;
+                                left: 0;
+                                right: 0;
+                                width: 0;
+                                margin: 0 auto;
+                                height: 1px;
+                                bottom: -20%;
+                                background-color: $text_color;
+                                transition: width .5s ease;
+                            }
+
                             &:hover {
                                 background-color: $text_color;
                                 color: $background_color;
@@ -86,14 +106,7 @@
                             pointer-events: none;
 
                             &::after {
-                                content: '';
-                                position: absolute;
-                                left: 0;
-                                right: 0;
-                                width: 100%;
-                                height: 1px;
-                                bottom: -20%;
-                                background-color: $text_color;
+                                width: 90%;
                             }
                         }
     
@@ -188,10 +201,101 @@
 
                         #display-view--info {
 
+                            overflow: auto;
+
+                            .view--info-about {
+                                position: relative;
+                                text-align: center;
+                                margin: 2rem;
+
+                                &::before {
+                                    content: '';
+                                    position: absolute;
+                                    left: 0;
+                                    right: 0;
+                                    top: -20px;
+                                    height: 1px;
+                                    width: 50%;
+                                    margin: 0 auto;
+                                    background-color: $auxiliary_color;
+
+                                }
+                            }
+
+                            .view--info-container {
+                                display: flex;
+                                justify-content: center;
+                                text-align: center;
+
+                                @include breakpoint-down(tablet) {
+                                    flex-direction: column;
+                                    align-items: center;
+                                }
+
+                                .view--info-item {
+                                    border: 1px solid;
+                                    border-radius: 3px;
+                                    padding: 1rem;
+                                    margin: 1rem;
+                                    width: 30%;
+
+                                    @include breakpoint-down(tablet) {
+                                        width: 50%;
+                                    }
+                                }
+
+                                .data-label {
+                                    font-size: 14px;
+                                    color: $auxiliary_color;
+                                    margin-bottom: .3rem;
+                                }
+
+                                .data-content {
+
+                                }
+                            }
+
                         }
 
                         #display-view--stats {
+                            overflow: auto;
 
+                            .stats-grid {
+                                position: relative;
+                                display: grid;
+                                grid-template-columns: repeat(3, 1fr);
+                                grid-gap: 1rem;
+                                margin-left: 2rem;
+                                margin-right: 2rem;
+                                margin-top: 2rem;
+                            
+                                @include breakpoint-down(tablet) {
+                                    grid-template-columns: repeat(2, 1fr);
+                                }
+                            
+                                @include breakpoint-down(mobile) {
+                                    grid-template-columns: repeat(1, 1fr);
+                                }
+    
+                                &::before {
+                                    content: '';
+                                    position: absolute;
+                                    left: 0;
+                                    right: 0;
+                                    top: -30px;
+                                    height: 1px;
+                                    width: 50%;
+                                    margin: 0 auto;
+                                    background-color: $auxiliary_color;
+                                }
+                                
+    
+                                .stat-item {
+                                    border: 1px solid;
+                                    border-radius: 3px;
+                                    padding: 1rem;
+                                }
+                            }
                         }
                     }
                 }

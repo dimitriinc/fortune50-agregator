@@ -33,6 +33,10 @@ body {
     font-family: eurostile;
 }
 
+p {
+    margin: 0;
+}
+
 .emerged {
     animation: emerge 500ms ease-out 800ms forwards;
 }
