@@ -8,6 +8,7 @@ export const state = {
     today: undefined,
     dayInPast: undefined,
     compressedStockPrices: [],
+    graphTimestamps: [],
     modeSelected: false,
     companyStats: {},
 }
@@ -75,7 +76,7 @@ export const fetchStockPrices = async function(symbol) {
         
         const stockPrices = data.results.map(obj => obj.c)
         state.compressedStockPrices = helpers.compressStockPrices(stockPrices)
-        // console.log(state.compressedStockPrices)
+        state.graphTimestamps = helpers.createGraphTimestamps(state.dayInPast, state.today)
     } catch (error) {
         throw error
     }

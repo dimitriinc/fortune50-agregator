@@ -1,3 +1,4 @@
+import { times } from 'lodash'
 import * as config from './conifg'
 
 const timeout = function(seconds) {
@@ -64,4 +65,24 @@ export const compressStockPrices = function(stockPrices) {
     }
 
     return compressedArray
+}
+
+export const createGraphTimestamps = function(pastDate, todayDate) {
+    const numberOfIntervals = config.COMPRESSED_SIZE
+    const timestamps = []
+    const startTime = pastDate.getTime()
+    const endTime = todayDate.getTime()
+    const interval = (endTime - startTime) / numberOfIntervals
+
+    for (let i = 0; i < numberOfIntervals; i++) {
+        const date = new Date(startTime + i * interval)
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = String(date.getFullYear()).slice(2);
+
+        const formattedDate = `${day}/${month}/${year}`;
+        timestamps.push(formattedDate)
+    }
+
+    return timestamps
 }

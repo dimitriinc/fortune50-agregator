@@ -76,6 +76,7 @@ async function controlSelect(symbol) {
         view.renderSelectedCard()
         await Promise.all([model.fetchCompanyOverview(symbol), model.fetchStockPrices(symbol), model.fetchCompanyIncomeStatement(symbol)])
         view.renderCompanySelected(model.state.selectedCompany, model.state.companyStats)
+        view.renderGraph(model.state.compressedStockPrices, model.state.graphTimestamps)
         model.persistSelectedMode(true)
     } catch (error) {
         view.renderSelectError(error.message)

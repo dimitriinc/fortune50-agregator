@@ -1,6 +1,7 @@
 import spinner from '../images/spinner.svg'
 import { stockExchanges, VISIBLE, HIDDEN } from './conifg'
 import numeral from 'numeral'
+import Chart from 'chart.js/auto'
 
 
 class View {
@@ -117,7 +118,10 @@ class View {
                 </div>
                 <div class="selected--display">
                     <div class="selected--display-view visible" id="display-view--graph">
-                        <div class="view--graph-img"></div>
+                        <div class="canvas">
+                            <canvas id="graph"></canvas>
+                            <img class="graph--spinner" src="${spinner}">
+                        </div>
                         <div class="view--graph-buttons">
                             <div class="view--graph-buttons--button active" id="graph-button--month" data-days-span="30">Month</div>
                             <div class="view--graph-buttons--button" id="graph-button--quarter" data-days-span="90">Quarter</div>
@@ -178,6 +182,79 @@ class View {
         this._blankSelectedCard.insertAdjacentHTML('afterbegin', html)
         this._blankSelectedCard.querySelectorAll('.selected--options-option').forEach(button => {
 
+        })
+    }
+
+    renderGraph(prices, timestamps) {
+        
+        const canvas = document.getElementById('graph')
+        document.querySelector('.graph--spinner').classList.add('hidden')
+
+        const chart = new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels: timestamps,
+                datasets: [
+                    {
+                        label: '',
+                        data: prices,
+                        fill: true,
+                        borderColor: "rgb(242, 139, 130)",
+                        tension: 0.1,
+                        backgroundColor: function(context) {
+                            const gradient = context.chart.ctx.createLinearGradient(0, 0, 0, context.chart.height)
+                            gradient.addColorStop(0, 'rgba(242, 139, 130, 1)')
+                            gradient.addColorStop(1, 'rgba(242, 139, 130, 0)')
+                            return gradient
+                        }
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: false,
+                            text: "Time"
+                        },
+                        ticks: {
+                            autoSkip: false,
+                            maxRotation: 180,
+                            callback: function(value, index, values) {
+                                if (index === 0 || index === values.length - 1) {
+                                    return timestamps[value]
+                                } else {
+                                    return ''
+                                }
+                            }
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: "Stock Price"
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                      display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                          label: function (context) {
+                            return context.dataset.data[context.dataIndex].toString()
+                          },
+                          title: function () {
+                            return null
+                          }
+                        }
+                    }
+                }
+            }
         })
     }
 
