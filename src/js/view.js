@@ -1,5 +1,6 @@
 import spinner from '../images/spinner.svg'
 import { stockExchanges, VISIBLE, HIDDEN } from './conifg'
+import numeral from 'numeral'
 
 
 class View {
@@ -103,11 +104,11 @@ class View {
         
     }
 
-    renderCompanySelected(company) {
+    renderCompanySelected(company, stats) {
         const html = `
             <div class="selected-container--overlay">
                 <div class="selected--head">
-                    ${company.Name}
+                    ${company.name}
                 </div>
                 <div class="selected--options">
                     <div class="selected--options-option active" id="options-graph" data-view-id="display-view--graph">Graph</div>
@@ -125,23 +126,48 @@ class View {
                     </div>
                     <div class="selected--display-view hidden" id="display-view--info">
                         <div class="view--info-about">
-                            ${company.Description}
+                            ${company.description}
                         </div>
                         <div class="view--info-container">
                             <div class="view--info-item">
                                 <p class="data-label">Sector</p>
-                                <p class="data-content">${this._capitalizeString(company.Sector)}</p>
+                                <p class="data-content">${this._capitalizeString(company.sector)}</p>
                             </div>
                             <div class="view--info-item">
                                 <p class="data-label">Address</p>
-                                <p class="data-content">${this._capitalizeWords(company.Address)}</p>
+                                <p class="data-content">${this._capitalizeWords(company.address)}</p>
+                            </div>
+                            <div class="view--info-item">
+                                <p class="data-label">Market capitalization</p>
+                                <p class="data-content">${numeral(company.marketCap).format('$0,0')}
                             </div>
                         </div>
                     </div>
                     <div class="selected--display-view hidden" id="display-view--stats">
                         <div class="stats-grid">
-                            <div class="stat-item">
-                                Dummy text
+                            <div class="stat-item--container">
+                                <div class="stat-item">
+                                    <p class="data-label">Total revenue</p>
+                                    <p class="data-content">${numeral(stats.totalRevenue).format('$0,0')}</p>
+                                </div>
+                            </div>
+                            <div class="stat-item--container">
+                                <div class="stat-item">
+                                    <p class="data-label">Gross profit</p>
+                                    <p class="data-content">${numeral(stats.grossProfit).format('$0,0')}</p>
+                                </div>
+                            </div>
+                            <div class="stat-item--container">
+                                <div class="stat-item">
+                                    <p class="data-label">Depreciation</p>
+                                    <p class="data-content">${numeral(stats.depreciation).format('$0,0')}</p>
+                                </div>
+                            </div>
+                            <div class="stat-item--container">
+                                <div class="stat-item">
+                                    <p class="data-label">Interest Income</p>
+                                    <p class="data-content">${numeral(stats.interestIncome).format('$0,0')}</p>
+                                </div>
                             </div>
                         </div>
                     </div>

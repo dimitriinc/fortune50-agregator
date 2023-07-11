@@ -9,6 +9,7 @@ export const state = {
     dayInPast: undefined,
     compressedStockPrices: [],
     modeSelected: false,
+    companyStats: {},
 }
 
 export const setDates = function(daysAgo) {
@@ -44,10 +45,19 @@ export const fetchCompanyOverview = async function(symbol) {
     try {
         const url = helpers.getAlphaVantageOverviewUrl(symbol)
         const data = await helpers.AJAX(url)
-        state.selectedCompany = data
+
+        const { Name: name, Description: description, Sector: sector, Address: address, MarketCapitalization: marketCap} = data
+        state.selectedCompany = {
+            name,
+            description,
+            sector,
+            address,
+            marketCap
+        }
+
         persistSelectedCompany()
 
-        console.log(data);
+        console.log(state.selectedCompany);
 
         if (Object.keys(data).length === 0) throw new Error("The company's data can't be reached")
 
@@ -65,7 +75,26 @@ export const fetchStockPrices = async function(symbol) {
         
         const stockPrices = data.results.map(obj => obj.c)
         state.compressedStockPrices = helpers.compressStockPrices(stockPrices)
-        console.log(state.compressedStockPrices)
+        // console.log(state.compressedStockPrices)
+    } catch (error) {
+        throw error
+    }
+}
+
+export const fetchCompanyIncomeStatement = async function(symbol) {
+    try {
+        const url = helpers.getAlphaVantageIncomeUrl(symbol)
+        const data = await helpers.AJAX(url)
+
+        console.log(data.annualReports[0]);
+
+        const { totalRevenue, grossProfit, depreciation, interestIncome } = data.annualReports[0]
+        state.companyStats = {
+            totalRevenue,
+            grossProfit,
+            depreciation,
+            interestIncome,
+        }        
     } catch (error) {
         throw error
     }

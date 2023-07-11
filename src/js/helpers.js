@@ -36,6 +36,10 @@ export const getAlphaVantageOverviewUrl = function(symbol) {
     return`${config.ALPHA_VANTAGE_BASE_URL}?symbol=${symbol}&function=OVERVIEW&apikey=${config.apiKeys.alphaVantage}`
 }
 
+export const getAlphaVantageIncomeUrl = function(symbol) {
+    return `${config.ALPHA_VANTAGE_BASE_URL}?symbol=${symbol}&function=INCOME_STATEMENT&apikey=${config.apiKeys.alphaVantage}`
+}
+
 export const getPolygonAggregateUrl = function(symbol, pastTimestamp, todayTimestamp) {
     return`${config.POLYGON_IO_BASE_URL}aggs/ticker/${symbol}/range/1/day/${pastTimestamp}/${todayTimestamp}?&limit=30&apiKey=${config.apiKeys.polygon_io}`
 }

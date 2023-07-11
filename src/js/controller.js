@@ -74,8 +74,8 @@ function controlExchangeButtons(mic) {
 async function controlSelect(symbol) {
     try {
         view.renderSelectedCard()
-        await Promise.all([model.fetchCompanyOverview(symbol), model.fetchStockPrices(symbol)])
-        view.renderCompanySelected(model.state.selectedCompany)
+        await Promise.all([model.fetchCompanyOverview(symbol), model.fetchStockPrices(symbol), model.fetchCompanyIncomeStatement(symbol)])
+        view.renderCompanySelected(model.state.selectedCompany, model.state.companyStats)
         model.persistSelectedMode(true)
     } catch (error) {
         view.renderSelectError(error.message)
