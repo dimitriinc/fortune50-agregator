@@ -119,7 +119,6 @@ class View {
                 <div class="selected--display">
                     <div class="selected--display-view visible" id="display-view--graph">
                         <div class="canvas">
-                            <canvas id="graph"></canvas>
                             <img class="graph--spinner" src="${spinner}">
                         </div>
                         <div class="view--graph-buttons">
@@ -186,11 +185,13 @@ class View {
     }
 
     renderGraph(prices, timestamps) {
-        
-        const canvas = document.getElementById('graph')
+
+        const canvas = document.createElement('canvas')
+        canvas.id = 'graph'
+        document.querySelector('.canvas').appendChild(canvas)
         document.querySelector('.graph--spinner').classList.add('hidden')
 
-        const chart = new Chart(canvas, {
+        new Chart(canvas, {
             type: 'line',
             data: {
                 labels: timestamps,
@@ -236,6 +237,17 @@ class View {
                         title: {
                             display: true,
                             text: "Stock Price"
+                        },
+                        ticks: {
+                            autoSkip: false,
+                            maxRotation: 0,
+                            callback: function(value, index, values) {
+                                if (index === 0 || index === values.length - 1) {
+                                    return `$${value}`
+                                } else {
+                                    return ''
+                                }
+                            }
                         }
                     }
                 },
@@ -256,6 +268,8 @@ class View {
                 }
             }
         })
+
+        document.querySelectorAll('.view--graph-buttons--button').forEach(btn => btn.removeAttribute('style'))
     }
 
     renderSpinner() {
@@ -297,6 +311,24 @@ class View {
             console.error(error)
         }
         
+    }
+
+    renderGraphError(message) {
+        try {
+            document.getElementById('graph').remove()
+        } catch(err) {
+
+        } finally {
+            document.querySelector('.graph--spinner').classList.remove('visible')
+            document.querySelector('.graph--spinner').classList.add('hidden')
+
+            document.querySelectorAll('.view--graph-buttons--button').forEach(btn => btn.removeAttribute('style'))
+
+            const error = document.createElement('div')
+            error.id = 'graph--error'
+            error.innerHTML = message
+            document.querySelector('.canvas').appendChild(error)
+        }
     }
 
     showGrid() {
@@ -423,6 +455,15 @@ class View {
             button.classList.remove('active')
             if (button.id === optionID) button.classList.add('active')
         })
+    }
+
+    removeCurrentGraph() {
+        document.getElementById('graph').remove()
+        const errorElement = document.getElementById('graph--error')
+        if (errorElement) errorElement.remove()
+        document.querySelector('.graph--spinner').classList.remove('hidden')
+        document.querySelector('.graph--spinner').classList.add('visible')
+        document.querySelectorAll('.view--graph-buttons--button').forEach(btn => btn.setAttribute('style', 'pointer-events: none;'))
     }
 
     _formatMarketCap(marketCap) {

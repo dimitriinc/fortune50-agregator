@@ -1,6 +1,6 @@
 export const LIMIT = 50
-export const TIMEOUT_SEC = 10
-export const COMPRESSED_SIZE = 10
+export const TIMEOUT_SEC = 15
+export const COMPRESSED_SIZE = 15
 
 export const SELECT_MODE = 'select_mode'
 export const SELECT_COMPANY = 'select_company'

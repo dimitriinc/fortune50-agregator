@@ -42,14 +42,15 @@ export const fetchCompanyProfile = async function(symbol) {
     }
 }
 
-export const fetchCompanyOverview = async function(symbol) {
+export const fetchCompanyOverview = async function(symbolInput) {
     try {
-        const url = helpers.getAlphaVantageOverviewUrl(symbol)
+        const url = helpers.getAlphaVantageOverviewUrl(symbolInput)
         const data = await helpers.AJAX(url)
 
-        const { Name: name, Description: description, Sector: sector, Address: address, MarketCapitalization: marketCap} = data
+        const { Name: name, Description: description, Sector: sector, Address: address, MarketCapitalization: marketCap, Symbol: symbol} = data
         state.selectedCompany = {
             name,
+            symbol,
             description,
             sector,
             address,
@@ -58,16 +59,15 @@ export const fetchCompanyOverview = async function(symbol) {
 
         persistSelectedCompany()
 
-        console.log(state.selectedCompany);
-
         if (Object.keys(data).length === 0) throw new Error("The company's data can't be reached")
 
     } catch (error) {
+        console.error(error);
         throw error
     }
 }
 
-export const fetchStockPrices = async function(symbol) {
+export const fetchStockPrices = async function(symbol = state.selectedCompany.symbol) {
     try {
         const url = helpers.getPolygonAggregateUrl(symbol, state.dayInPast.getTime(), state.today.getTime())
         const data = await helpers.AJAX(url)

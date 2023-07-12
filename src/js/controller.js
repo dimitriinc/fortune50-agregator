@@ -94,8 +94,17 @@ function controlSelectOptions(viewID, buttonID) {
     view.displaySelectedOptionView(viewID)
 }
 
-function controlGraphOptions(daysSpan, buttonID) {
-    view.desactivateGraphOptions(buttonID)
+async function controlGraphOptions(daysSpan, buttonID) {
+    try {
+        view.desactivateGraphOptions(buttonID)
+        view.removeCurrentGraph()
+        model.setDates(daysSpan)
+        await model.fetchStockPrices()
+        view.renderGraph(model.state.compressedStockPrices, model.state.graphTimestamps)
+    } catch(error) {
+        view.renderGraphError('The data failed to arrive. Please try again later.')
+    }
+    
 }
 
 
