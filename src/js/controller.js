@@ -1,7 +1,7 @@
 import '../scss/style.scss'
 import * as model from './model'
 import view from './view'
-import { DAYS_AGO_MONTH, DAYS_AGO_QUARTER, DAYS_AGO_YEAR} from './conifg'
+import { DAYS_AGO_MONTH, DAYS_AGO_QUARTER, DAYS_AGO_YEAR, DIRECTION_LEFT} from './conifg'
 
 async function init() {
 
@@ -53,8 +53,8 @@ async function controlHashChange() {
         model.persistSelectedExchange(stockExchange)
 
         view.highlightExchange(stockExchange)
-        model.state.companies.forEach((company, index) => {
-            view.renderCompany(company, index)
+        model.state.companies.forEach(company => {
+            view.renderCompany(company)
         })
 
         view.showGrid()
@@ -71,11 +71,13 @@ function controlExchangeButtons(mic) {
     window.location.hash = mic
 }
 
-async function controlSelect(symbol) {
+async function controlSelect(symbol, index) {
     try {
-        view.renderSelectedCard()
+        model.updateSelectedIndex(index)
+        view.renderSelectedCard(+index)
         await Promise.all([model.fetchCompanyOverview(symbol), model.fetchStockPrices(symbol), model.fetchCompanyIncomeStatement(symbol)])
         view.renderCompanySelected(model.state.selectedCompany, model.state.companyStats)
+        view.addArrowsHandler(controlSelectArrows)
         view.renderGraph(model.state.compressedStockPrices, model.state.graphTimestamps)
         model.persistSelectedMode(true)
     } catch (error) {
@@ -105,6 +107,16 @@ async function controlGraphOptions(daysSpan, buttonID) {
         view.renderGraphError('The data failed to arrive. Please try again later.')
     }
     
+}
+
+async function controlSelectArrows(direction) {
+    if (direction === DIRECTION_LEFT) {
+        model.updateSelectedIndex(model.state.selectedIndex--)
+    } else {
+        model.updateSelectedIndex(model.state.selectedIndex++)
+    }
+    const newSymbol = model.getSelectedSymbol()
+    controlSelect(newSymbol, model.state.selectedIndex)
 }
 
 

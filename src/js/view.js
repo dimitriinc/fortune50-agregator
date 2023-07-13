@@ -1,5 +1,5 @@
 import spinner from '../images/spinner.svg'
-import { stockExchanges, VISIBLE, HIDDEN } from './conifg'
+import { stockExchanges, VISIBLE, HIDDEN, DIRECTION_LEFT, DIRECTION_RIGHT } from './conifg'
 import numeral from 'numeral'
 import Chart from 'chart.js/auto'
 
@@ -75,16 +75,16 @@ class View {
         this._myEmail.addEventListener('click', () => {this._switchCorporates()})
     }
 
-    renderCompany(company, index) {
+    renderCompany(company) {
         const marketCap = this._formatMarketCap(company.marketCap)
         const html = `
             <div class="grid-item">
                 <div class="grid-item--rating">
-                    <span class="grid-item--rating--content">${index + 1}</span>
+                    <span class="grid-item--rating--content">${company.index + 1}</span>
                 </div>
-                <div class="grid-item--card" data-symbol="${company.symbol}">
+                <div class="grid-item--card" data-symbol="${company.symbol}" data-index="${company.index}">
                     <div class="grid-item--card--name">
-                        <div class="grid-item--card--name--company-name">${company.companyName}</div>
+                        <div class="grid-item--card--name--company-name">${company.name}</div>
                         <div class="grid-item--card--name--symbol">${company.symbol}</div>
                     </div>
                     <div class="grid-item--card--marketcap">${marketCap}</div>
@@ -94,11 +94,16 @@ class View {
         this._gridContainer.insertAdjacentHTML('beforeend', html)
     }
 
-    renderSelectedCard() {
+    renderSelectedCard(index) {
+        const container = document.querySelector('.selected-container')
+        if (container) this._overlayDouble.innerHTML = ''
+
         const html = `
             <div class="selected-container">
                 <img class="selected--spinner" src="${spinner}">
             </div>
+            <div class="selected-arrow ${index === 49 ? 'hidden' : 'visible'}" id="arrow-right"><span class="arrow-content">></span></div>
+            <div class="selected-arrow ${index === 0 ? 'hidden' : 'visible'}" id="arrow-left"><span class="arrow-content"><</span></div>
         `
         this._overlayDouble.insertAdjacentHTML('afterbegin', html)
         this._blankSelectedCard = document.querySelector('.selected-container')
@@ -319,6 +324,9 @@ class View {
         } catch(err) {
 
         } finally {
+            const existingError = document.getElementById('graph--error')
+            if (existingError) existingError.remove()
+
             document.querySelector('.graph--spinner').classList.remove('visible')
             document.querySelector('.graph--spinner').classList.add('hidden')
 
@@ -380,7 +388,7 @@ class View {
 
             this.enterSelectedMode()
             
-            handler(card.dataset.symbol)
+            handler(card.dataset.symbol, card.dataset.index)
         })
 
         this._overlayDouble.addEventListener('click', event => {
@@ -409,6 +417,15 @@ class View {
             const button = event.target.closest('.view--graph-buttons--button')
             if (!button) return
             handler(button.dataset.daysSpan, button.id)
+        })
+    }
+
+    addArrowsHandler(handler) {
+        document.getElementById('arrow-right').addEventListener('click', () => {
+            handler(DIRECTION_RIGHT)
+        })
+        document.getElementById('arrow-left').addEventListener('click', () => {
+            handler(DIRECTION_LEFT)
         })
     }
 

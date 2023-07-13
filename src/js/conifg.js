@@ -10,6 +10,9 @@ export const DAYS_AGO_MONTH = 30
 export const DAYS_AGO_QUARTER = 90
 export const DAYS_AGO_YEAR = 365
 
+export const DIRECTION_LEFT = 0
+export const DIRECTION_RIGHT = 1
+
 export const VISIBLE = 1
 export const HIDDEN = 0
 

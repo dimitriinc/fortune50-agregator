@@ -21,368 +21,401 @@
         align-items: center;
         z-index: 950;
 
-        .selected {
+        .selected-container {
+            width: 75vw;
+            height: 80vh;
+            background-color: $secondary_background_color;
+            border: 1px solid $text_color;
+            border-radius: 20px;
+            position: relative;
+            z-index: 960;
 
-            &-container {
-                width: 75vw;
-                height: 80vh;
-                background-color: $secondary_background_color;
-                border: 1px solid $text_color;
-                border-radius: 20px;
-                position: relative;
-                z-index: 960;
+            @include breakpoint-down(tablet) {
+                width: 80vw;
+                height: 70vh;
+                transform: translateY(-25px);
+            }
 
-                @include breakpoint-down(tablet) {
-                    width: 80vw;
-                    height: 70vh;
-                    transform: translateY(-25px);
+            .selected--spinner {
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 45%;
+                margin-left: auto;
+                margin-right: auto;
+                transition: all .5s ease;
+            }
+
+            &--overlay {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+
+                .selected--head {     
+                    flex: 0 0 auto;
+                    margin-top: 1rem;
+                    padding: 1rem;
+                    font-size: 2rem;
+                    text-align: center;
                 }
 
-                .selected--spinner {
-                    position: absolute;
-                    left: 0;
-                    right: 0;
-                    top: 45%;
-                    margin-left: auto;
-                    margin-right: auto;
-                    transition: all .5s ease;
-                }
-
-                &--overlay {
+                .selected--options {
+                    flex: 0 0 auto;
                     display: flex;
-                    flex-direction: column;
-                    height: 100%;
+                    justify-content: space-around;
+                    align-items: center;
+                    margin-left: 2rem;
+                    margin-right: 2rem;
 
-                    .selected--head {     
-                        flex: 0 0 auto;
-                        margin-top: 1rem;
-                        padding: 1rem;
-                        font-size: 2rem;
+                    &-option {
+                        flex-grow: 1;
+                        margin: 1rem;
                         text-align: center;
-                    }
-    
-                    .selected--options {
-                        flex: 0 0 auto;
-                        display: flex;
-                        justify-content: space-around;
-                        align-items: center;
-                        margin-left: 2rem;
-                        margin-right: 2rem;
-    
-                        &-option {
-                            flex-grow: 1;
-                            margin: 1rem;
-                            text-align: center;
-                            text-transform: uppercase;
-                            padding: 1rem;
-                            justify-self: stretch;
-                            border: 1px solid $text_color;
-                            border-radius: 6px;
-                            cursor: pointer;
-                            transition: all .5s ease;
+                        text-transform: uppercase;
+                        padding: 1rem;
+                        justify-self: stretch;
+                        border: 1px solid $text_color;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        transition: all .5s ease;
 
-                            @include breakpoint-down(mobile) {
-                                padding: .5rem;
-                                margin: .5rem;
-                                font-size: 14px;
+                        @include breakpoint-down(mobile) {
+                            padding: .5rem;
+                            margin: .5rem;
+                            font-size: 14px;
+                        }
+
+                        &::after {
+                            content: '';
+                            position: absolute;
+                            left: 0;
+                            right: 0;
+                            width: 0;
+                            margin: 0 auto;
+                            height: 1px;
+                            bottom: -20%;
+                            background-color: $text_color;
+                            transition: width .5s ease;
+                        }
+
+                        &:hover {
+                            background-color: $text_color;
+                            color: $background_color;
+                        }
+                        
+                    }
+
+                    .active {
+                        position: relative;
+                        pointer-events: none;
+
+                        &::after {
+                            width: 90%;
+                        }
+                    }
+
+                }
+
+                .selected--display {
+                    flex: 1 1 auto;
+                    max-height: 100%;
+                    overflow: hidden;
+                    margin: 1rem;
+                    position: relative;
+
+                    &-view {
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        height: 100%;
+                        width: 100%;
+                        transition: all .5s ease;
+                    }
+
+                    .data-label {
+                        font-size: 14px;
+                        color: $auxiliary_color;
+                        margin-bottom: .3rem;
+                    }
+
+                    .data-content {
+
+                    }
+
+                    #display-view--graph {
+                        display: flex;
+                        flex-direction: column;
+                        height: 100%;
+
+                        .canvas {
+                            position: relative;
+                            flex-grow: 1;
+                            margin-bottom: 1rem;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            height: 75%;
+
+                            #graph {
+                            }
+                            
+                            .graph--spinner {
+                                position: absolute;
+                                top: 35%;
+                                left: 0;
+                                right: 0;
+                                margin-left: auto;
+                                margin-right: auto;
+                                transition: all .5s ease;
+                                display: block;
                             }
 
-                            &::after {
+                            #graph--error {
+                                position: absolute;
+                                left: 0;
+                                right: 0;
+                                top: 40%;
+                                margin-left: auto;
+                                margin-right: auto;
+                            }
+
+                        }
+
+                        .view--graph-buttons {
+                            display: flex;
+                            justify-content: center;
+                            flex-grow: 0;
+                            width: 80%;
+                            margin-left: auto;
+                            margin-right: auto;
+                            margin-bottom: 1rem;
+
+                            .active {
+                                color: $secondary_background_color;
+                                background-color: $auxiliary_color;
+                                pointer-events: none;
+                            }
+
+                            & div:nth-child(2) {
+                                margin-left: 1rem;
+                                margin-right: 1rem;
+                            }
+
+                            &--button {
+                                padding: .7rem;
+                                border: 1px solid $auxiliary_color;
+                                border-radius: 3px;
+                                position: relative;
+                                cursor: pointer;
+                                transition: all .5s ease;
+
+                                @include breakpoint-down(mobile) {
+                                    font-size: 14px;
+                                    padding: .4rem;
+                                }
+
+                                &::after {
+                                    content: '';
+                                    position: absolute;
+                                    left: 0;
+                                    right: 0;
+                                    margin: 0 auto;
+                                    bottom: -20%;
+                                    height: 1px;
+                                    background-color: $auxiliary_color;
+                                    width: 0;
+                                    transition: width .5s ease;
+                                }
+
+                                &:hover {
+
+                                    &:not(.active)::after {
+                                        width: 100%;
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+
+                    #display-view--info {
+
+                        overflow: auto;
+
+                        .view--info-about {
+                            position: relative;
+                            text-align: center;
+                            margin: 2rem;
+
+                            &::before {
                                 content: '';
                                 position: absolute;
                                 left: 0;
                                 right: 0;
-                                width: 0;
-                                margin: 0 auto;
+                                top: -20px;
                                 height: 1px;
-                                bottom: -20%;
-                                background-color: $text_color;
-                                transition: width .5s ease;
+                                width: 50%;
+                                margin: 0 auto;
+                                background-color: $auxiliary_color;
+
+                            }
+                        }
+
+                        .view--info-container {
+                            display: flex;
+                            justify-content: center;
+                            text-align: center;
+
+                            @include breakpoint-down(tablet) {
+                                flex-direction: column;
+                                align-items: center;
                             }
 
-                            &:hover {
-                                background-color: $text_color;
-                                color: $background_color;
+                            .view--info-item {
+                                border: 1px solid;
+                                border-radius: 3px;
+                                padding: 1rem;
+                                margin: 1rem;
+                                width: 30%;
+
+                                @include breakpoint-down(tablet) {
+                                    width: 50%;
+                                }
+
+                                @include breakpoint-down(mobile) {
+                                    width: 80%;
+                                }
+                            }
+                        }
+
+                    }
+
+                    #display-view--stats {
+                        overflow: auto;
+
+                        .stats-grid {
+                            position: relative;
+                            display: grid;
+                            grid-template-columns: repeat(3, 1fr);
+                            justify-content: center;
+                            align-content: center;
+                            grid-gap: 1rem;
+                            margin-left: 2rem;
+                            margin-right: 2rem;
+                            margin-top: 2rem;
+                        
+                            @include breakpoint-down(tablet) {
+                                grid-template-columns: repeat(2, 1fr);
+                            }
+                        
+                            @include breakpoint-down(mobile) {
+                                grid-template-columns: repeat(1, 1fr);
+                            }
+
+                            @include breakpoint-up(desktop) {
+                                grid-template-columns: repeat(4, 1fr);
+                            }
+
+                            &::before {
+                                content: '';
+                                position: absolute;
+                                left: 0;
+                                right: 0;
+                                top: -30px;
+                                height: 1px;
+                                width: 50%;
+                                margin: 0 auto;
+                                background-color: $auxiliary_color;
                             }
                             
-                        }
 
-                        .active {
-                            position: relative;
-                            pointer-events: none;
-
-                            &::after {
-                                width: 90%;
-                            }
-                        }
-    
-                    }
-    
-                    .selected--display {
-                        flex: 1 1 auto;
-                        max-height: 100%;
-                        overflow: hidden;
-                        margin: 1rem;
-                        position: relative;
-    
-                        &-view {
-                            position: absolute;
-                            left: 0;
-                            top: 0;
-                            height: 100%;
-                            width: 100%;
-                            transition: all .5s ease;
-                        }
-
-                        .data-label {
-                            font-size: 14px;
-                            color: $auxiliary_color;
-                            margin-bottom: .3rem;
-                        }
-
-                        .data-content {
-
-                        }
-
-                        #display-view--graph {
-                            display: flex;
-                            flex-direction: column;
-                            height: 100%;
-
-                            .canvas {
-                                position: relative;
-                                flex-grow: 1;
-                                margin-bottom: 1rem;
+                            .stat-item--container {
+                                border: 1px solid;
+                                border-radius: 50%;
+                                padding: 1rem;
+                                width: 170px;
+                                height: 170px;
                                 display: flex;
+                                justify-self: center;
                                 justify-content: center;
                                 align-items: center;
-                                height: 80%;
-
-                                #graph {
-                                }
-                                
-                                .graph--spinner {
-                                    position: absolute;
-                                    top: 35%;
-                                    left: 0;
-                                    right: 0;
-                                    margin-left: auto;
-                                    margin-right: auto;
-                                    transition: all .5s ease;
-                                    display: block;
-                                }
-
-                                #graph--error {
-                                    position: absolute;
-                                    left: 0;
-                                    right: 0;
-                                    top: 40%;
-                                    margin-left: auto;
-                                    margin-right: auto;
-                                }
-
-                            }
-
-                            .view--graph-buttons {
-                                display: flex;
-                                justify-content: center;
-                                flex-grow: 0;
-                                width: 80%;
-                                margin-left: auto;
-                                margin-right: auto;
-                                margin-bottom: 1rem;
-
-                                .active {
-                                    color: $secondary_background_color;
-                                    background-color: $auxiliary_color;
-                                    pointer-events: none;
-                                }
-
-                                & div:nth-child(2) {
-                                    margin-left: 1rem;
-                                    margin-right: 1rem;
-                                }
-
-                                &--button {
-                                    padding: .7rem;
-                                    border: 1px solid $auxiliary_color;
-                                    border-radius: 3px;
-                                    position: relative;
-                                    cursor: pointer;
-                                    transition: all .5s ease;
-
-                                    @include breakpoint-down(mobile) {
-                                        font-size: 14px;
-                                        padding: .4rem;
-                                    }
-
-                                    &::after {
-                                        content: '';
-                                        position: absolute;
-                                        left: 0;
-                                        right: 0;
-                                        margin: 0 auto;
-                                        bottom: -20%;
-                                        height: 1px;
-                                        background-color: $auxiliary_color;
-                                        width: 0;
-                                        transition: width .5s ease;
-                                    }
-
-                                    &:hover {
-
-                                        &:not(.active)::after {
-                                            width: 100%;
-                                        }
-
-                                    }
-                                }
-                            }
-                        }
-
-                        #display-view--info {
-
-                            overflow: auto;
-
-                            .view--info-about {
-                                position: relative;
-                                text-align: center;
-                                margin: 2rem;
-
-                                &::before {
-                                    content: '';
-                                    position: absolute;
-                                    left: 0;
-                                    right: 0;
-                                    top: -20px;
-                                    height: 1px;
-                                    width: 50%;
-                                    margin: 0 auto;
-                                    background-color: $auxiliary_color;
-
-                                }
-                            }
-
-                            .view--info-container {
-                                display: flex;
-                                justify-content: center;
-                                text-align: center;
 
                                 @include breakpoint-down(tablet) {
-                                    flex-direction: column;
-                                    align-items: center;
+                                    width: 150px;
+                                    height: 150px;
                                 }
 
-                                .view--info-item {
-                                    border: 1px solid;
-                                    border-radius: 3px;
-                                    padding: 1rem;
-                                    margin: 1rem;
-                                    width: 30%;
+                                .stat-item {
 
-                                    @include breakpoint-down(tablet) {
-                                        width: 50%;
-                                    }
-
-                                    @include breakpoint-down(mobile) {
-                                        width: 80%;
-                                    }
-                                }
-                            }
-
-                        }
-
-                        #display-view--stats {
-                            overflow: auto;
-
-                            .stats-grid {
-                                position: relative;
-                                display: grid;
-                                grid-template-columns: repeat(3, 1fr);
-                                justify-content: center;
-                                align-content: center;
-                                grid-gap: 1rem;
-                                margin-left: 2rem;
-                                margin-right: 2rem;
-                                margin-top: 2rem;
-                            
-                                @include breakpoint-down(tablet) {
-                                    grid-template-columns: repeat(2, 1fr);
-                                }
-                            
-                                @include breakpoint-down(mobile) {
-                                    grid-template-columns: repeat(1, 1fr);
-                                }
-
-                                @include breakpoint-up(desktop) {
-                                    grid-template-columns: repeat(4, 1fr);
-                                }
-    
-                                &::before {
-                                    content: '';
-                                    position: absolute;
-                                    left: 0;
-                                    right: 0;
-                                    top: -30px;
-                                    height: 1px;
-                                    width: 50%;
-                                    margin: 0 auto;
-                                    background-color: $auxiliary_color;
-                                }
-                                
-    
-                                .stat-item--container {
-                                    border: 1px solid;
-                                    border-radius: 50%;
-                                    padding: 1rem;
-                                    width: 170px;
-                                    height: 170px;
-                                    display: flex;
-                                    justify-self: center;
-                                    justify-content: center;
-                                    align-items: center;
-
-                                    @include breakpoint-down(tablet) {
-                                        width: 150px;
-                                        height: 150px;
-                                    }
-
-                                    .stat-item {
-
-                                    }
                                 }
                             }
                         }
                     }
                 }
-    
-                
-    
             }
-
-            &-arrow {
-                display: block;
-                width: 50px;
-                height: 50px;
-                padding: .5rem;
-                border: 1px solid;
-                border-radius: 50%;
-
-                #arrow-right {
-                    position: absolute;
-                    right: 0;
-                    top: 45%;
-                    margin-right: 1rem;
-                }
-
-                #arrow-left {
-
-                }
-
-            }
-
         }
 
-        
+        .selected-arrow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 45%;
+            width: 50px;
+            height: 50px;
+            background-color: $secondary_background_color;
+            padding: .5rem;
+            border: 1px solid;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 960;
+            transition: all .5s ease;
+
+            &:hover {
+                scale: 95%;
+            }
+
+            &:active {
+                scale: 100%;
+            }
+
+            
+            @include breakpoint-down(tablet) {
+                top: auto;
+                bottom: 0;
+            }
+
+            .arrow-content {
+                display: block;
+            }
+        }
+
+        #arrow-right {
+            right: 0;
+            margin-right: 2rem;
+
+            @include breakpoint-down(tablet) {
+                margin-bottom: 2rem;
+                right: 25%;
+            }
+
+            @include breakpoint-down(mobile) {
+                right: 10%;
+            }
+        }
+
+        #arrow-left {
+            left: 0;
+            margin-left: 2rem;
+
+            @include breakpoint-down(tablet) {
+                margin-bottom: 2rem;
+                left: 25%;
+            }
+
+            @include breakpoint-down(mobile) {
+                left: 10%;
+            }
+        }
     }
 }

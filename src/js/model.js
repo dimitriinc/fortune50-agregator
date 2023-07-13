@@ -5,6 +5,7 @@ export const state = {
     companies: [],
     selectedCompany: {},
     selectedExchange: stockExchanges.nasdaq,
+    selectedIndex: 0,
     today: undefined,
     dayInPast: undefined,
     compressedStockPrices: [],
@@ -23,7 +24,19 @@ export const fetchCompaniesRating = async function(exchange) {
     try {
         const url = helpers.getFinModelPrepScreenerUrl(exchange)
         const data = await helpers.AJAX(url)
-        state.companies = data
+
+        data.forEach((company, index) => {
+            const { companyName: name, symbol, marketCap } = company
+            const stateCompany = {
+                name,
+                symbol,
+                marketCap,
+                index: index
+            }
+
+            state.companies.push(stateCompany)
+        })
+
         state.selectedExchange = exchange
         persistSelectedExchange()
     } catch (error) {
@@ -87,8 +100,6 @@ export const fetchCompanyIncomeStatement = async function(symbol) {
         const url = helpers.getAlphaVantageIncomeUrl(symbol)
         const data = await helpers.AJAX(url)
 
-        console.log(data.annualReports[0]);
-
         const { totalRevenue, grossProfit, depreciation, interestIncome } = data.annualReports[0]
         state.companyStats = {
             totalRevenue,
@@ -123,9 +134,16 @@ export const actualizeStateOnInit = function () {
         const exchange = localStorage.getItem(SELECT_EXCHANGE)
         exchange !== 'undefined' ? state.selectedExchange = exchange : state.selectedExchange = stockExchanges.nasdaq
     } catch(error) {
-        console.error(error)
         throw new Error(error.message)
         
     }
     
+}
+
+export const updateSelectedIndex = function(index) {
+    state.selectedIndex = index
+}
+
+export const getSelectedSymbol = function() {
+    return state.companies[state.selectedIndex].symbol
 }
