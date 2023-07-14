@@ -1,7 +1,7 @@
 import '../scss/style.scss'
 import * as model from './model'
 import view from './view'
-import { DAYS_AGO_MONTH, DAYS_AGO_QUARTER, DAYS_AGO_YEAR, DIRECTION_LEFT} from './conifg'
+import { DAYS_AGO_MONTH, DIRECTION_LEFT} from './conifg'
 
 async function init() {
 
@@ -74,7 +74,7 @@ function controlExchangeButtons(mic) {
 async function controlSelect(symbol, index) {
     try {
         model.updateSelectedIndex(index)
-        view.renderSelectedCard(+index)
+        view.renderSelectedCard(index)
         await Promise.all([model.fetchCompanyOverview(symbol), model.fetchStockPrices(symbol), model.fetchCompanyIncomeStatement(symbol)])
         view.renderCompanySelected(model.state.selectedCompany, model.state.companyStats)
         view.addArrowsHandler(controlSelectArrows)
@@ -111,12 +111,13 @@ async function controlGraphOptions(daysSpan, buttonID) {
 
 async function controlSelectArrows(direction) {
     if (direction === DIRECTION_LEFT) {
-        model.updateSelectedIndex(model.state.selectedIndex--)
+        model.updateSelectedIndex(model.state.selectedIndex - 1)
     } else {
-        model.updateSelectedIndex(model.state.selectedIndex++)
+        model.updateSelectedIndex(model.state.selectedIndex + 1)
     }
+
     const newSymbol = model.getSelectedSymbol()
-    controlSelect(newSymbol, model.state.selectedIndex)
+    await controlSelect(newSymbol, model.state.selectedIndex)
 }
 
 

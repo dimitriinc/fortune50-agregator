@@ -95,8 +95,9 @@ class View {
     }
 
     renderSelectedCard(index) {
-        const container = document.querySelector('.selected-container')
-        if (container) this._overlayDouble.innerHTML = ''
+
+        console.log(`INDEX:: ${index}`);
+        if (+this._overlay.dataset.visibility === VISIBLE) this._overlayDouble.innerHTML = ''
 
         const html = `
             <div class="selected-container">
@@ -388,7 +389,7 @@ class View {
 
             this.enterSelectedMode()
             
-            handler(card.dataset.symbol, card.dataset.index)
+            handler(card.dataset.symbol, +card.dataset.index)
         })
 
         this._overlayDouble.addEventListener('click', event => {
