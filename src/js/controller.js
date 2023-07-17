@@ -16,7 +16,7 @@ async function init() {
 
         if (model.state.modeSelected) {
             view.enterSelectedMode()
-            await controlSelect(model.state.selectedCompany.Symbol)
+            await controlSelect(model.state.selectedCompany.symbol, model.state.selectedIndex, model.state.selectedCompany.name)
         }
 
         view.addHashHandler(controlHashChange)
@@ -71,15 +71,25 @@ function controlExchangeButtons(mic) {
     window.location.hash = mic
 }
 
-async function controlSelect(symbol, index) {
+async function controlSelect(symbol, index, name) {
     try {
         model.updateSelectedIndex(index)
-        view.renderSelectedCard(index)
-        await Promise.all([model.fetchCompanyOverview(symbol), model.fetchStockPrices(symbol), model.fetchCompanyIncomeStatement(symbol)])
-        view.renderCompanySelected(model.state.selectedCompany, model.state.companyStats)
+        view.renderSelectedCard(index, name)
         view.addArrowsHandler(controlSelectArrows)
-        view.renderGraph(model.state.compressedStockPrices, model.state.graphTimestamps)
-        model.persistSelectedMode(true)
+        const [infoPromise, graphPromise, statsPromise] = await Promise.allSettled([model.fetchCompanyOverview(symbol), model.fetchStockPrices(symbol), model.fetchCompanyIncomeStatement(symbol)])
+
+        if (graphPromise.status === 'fulfilled') view.renderGraphView(model.state.compressedStockPrices, model.state.graphTimestamps)
+        else view.renderGraphError(graphPromise.reason.message)
+
+        if (infoPromise.status === 'fulfilled') view.renderInfoView(model.state.selectedCompany)
+        else view.renderInfoError(infoPromise.reason.message)
+
+        if (statsPromise.status === 'fulfilled') view.renderStatsView(model.state.companyStats)
+        else view.renderStatsError(statsPromise.reason.message)
+
+        // view.renderCompanySelected(model.state.selectedCompany, model.state.companyStats)
+        // view.renderGraph(model.state.compressedStockPrices, model.state.graphTimestamps)
+        // model.persistSelectedMode(true)
     } catch (error) {
         view.renderSelectError(error.message)
         model.persistSelectedMode(false)
@@ -92,19 +102,19 @@ function controlDeselect() {
 }
 
 function controlSelectOptions(viewID, buttonID) {
-    view.desactivateSelectOptions(buttonID)
+    view.resetSelectOptionsStyles(buttonID)
     view.displaySelectedOptionView(viewID)
 }
 
 async function controlGraphOptions(daysSpan, buttonID) {
     try {
-        view.desactivateGraphOptions(buttonID)
+        view.resetGraphBtnStyles(buttonID)
         view.removeCurrentGraph()
         model.setDates(daysSpan)
         await model.fetchStockPrices()
-        view.renderGraph(model.state.compressedStockPrices, model.state.graphTimestamps)
+        view.renderGraphView(model.state.compressedStockPrices, model.state.graphTimestamps)
     } catch(error) {
-        view.renderGraphError('The data failed to arrive. Please try again later.')
+        view.renderGraphError('The limit of API calls per minute (5) is expired. Wait a bit to request the stock prices again.')
     }
     
 }
@@ -117,7 +127,8 @@ async function controlSelectArrows(direction) {
     }
 
     const newSymbol = model.getSelectedSymbol()
-    await controlSelect(newSymbol, model.state.selectedIndex)
+    const newName = model.getSelectedName()
+    await controlSelect(newSymbol, model.state.selectedIndex, newName)
 }
 
 

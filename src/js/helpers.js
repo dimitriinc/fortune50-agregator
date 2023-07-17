@@ -1,10 +1,10 @@
-import { times } from 'lodash'
+import { TimeoutError } from './errors'
 import * as config from './conifg'
 
 const timeout = function(seconds) {
     return new Promise((_, reject) => {
         setTimeout(() => {
-            reject(new Error('The server took too long to respond. Please try again later.'))
+            reject(new TimeoutError())
         }, seconds * 1000)
     })
 }

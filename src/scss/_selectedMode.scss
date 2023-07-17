@@ -36,16 +36,6 @@
                 transform: translateY(-25px);
             }
 
-            .selected--spinner {
-                position: absolute;
-                left: 0;
-                right: 0;
-                top: 45%;
-                margin-left: auto;
-                margin-right: auto;
-                transition: all .5s ease;
-            }
-
             &--overlay {
                 display: flex;
                 flex-direction: column;
@@ -123,12 +113,13 @@
                     margin: 1rem;
                     position: relative;
 
-                    &-view {
+                    .selected--spinner {
                         position: absolute;
                         left: 0;
-                        top: 0;
-                        height: 100%;
-                        width: 100%;
+                        right: 0;
+                        top: 30%;
+                        margin-left: auto;
+                        margin-right: auto;
                         transition: all .5s ease;
                     }
 
@@ -138,8 +129,13 @@
                         margin-bottom: .3rem;
                     }
 
-                    .data-content {
-
+                    &-view {
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        height: 100%;
+                        width: 100%;
+                        transition: all .5s ease;
                     }
 
                     #display-view--graph {
@@ -177,6 +173,7 @@
                                 top: 40%;
                                 margin-left: auto;
                                 margin-right: auto;
+                                width: 60%;
                             }
 
                         }
@@ -242,6 +239,10 @@
 
                         overflow: auto;
 
+                        #info-error {
+
+                        }
+
                         .view--info-about {
                             position: relative;
                             text-align: center;
@@ -292,6 +293,10 @@
 
                     #display-view--stats {
                         overflow: auto;
+
+                        #stats-error {
+                            
+                        }
 
                         .stats-grid {
                             position: relative;

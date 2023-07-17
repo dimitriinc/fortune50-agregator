@@ -15,6 +15,7 @@ class View {
     _overlay
     _overlayDouble
     _blankSelectedCard
+    _selectedDisplay
 
     renderOverlay() {
         const html = `
@@ -82,7 +83,7 @@ class View {
                 <div class="grid-item--rating">
                     <span class="grid-item--rating--content">${company.index + 1}</span>
                 </div>
-                <div class="grid-item--card" data-symbol="${company.symbol}" data-index="${company.index}">
+                <div class="grid-item--card" data-symbol="${company.symbol}" data-name="${company.name}" data-index="${company.index}">
                     <div class="grid-item--card--name">
                         <div class="grid-item--card--name--company-name">${company.name}</div>
                         <div class="grid-item--card--name--symbol">${company.symbol}</div>
@@ -94,104 +95,61 @@ class View {
         this._gridContainer.insertAdjacentHTML('beforeend', html)
     }
 
-    renderSelectedCard(index) {
+    renderSelectedCard(index, companyName) {
 
-        console.log(`INDEX:: ${index}`);
         if (+this._overlay.dataset.visibility === VISIBLE) this._overlayDouble.innerHTML = ''
 
         const html = `
             <div class="selected-container">
-                <img class="selected--spinner" src="${spinner}">
+                <div class="selected-container--overlay">
+
+                    <div class="selected--head">
+                        ${companyName}
+                    </div>
+
+                    <div class="selected--options">
+                        <div class="selected--options-option active" id="options-graph" data-view-id="display-view--graph" style="pointer-events: none">Graph</div>
+                        <div class="selected--options-option" id="options-info" data-view-id="display-view--info" style="pointer-events: none">Info</div>
+                        <div class="selected--options-option" id="options-stats" data-view-id="display-view--stats" style="pointer-events: none">Stats</div>
+                    </div>
+           
+                    <div class="selected--display">
+
+
+
+
+                        <div class="selected--display-view visible" id="display-view--graph">
+                            <div class="canvas">
+                                <img class="graph--spinner" src="${spinner}">
+                            </div>
+                            <div class="view--graph-buttons">
+                                <div class="view--graph-buttons--button active" id="graph-button--month" data-days-span="30" style="pointer-events: none">Month</div>
+                                <div class="view--graph-buttons--button" id="graph-button--quarter" data-days-span="90" style="pointer-events: none">Quarter</div>
+                                <div class="view--graph-buttons--button" id="graph-button--year" data-days-span="365" style="pointer-events: none">Year</div>
+                            </div>
+                        </div>
+
+                        <div class="selected--display-view hidden" id="display-view--info"></div>
+
+                        <div class="selected--display-view hidden" id="display-view--stats"></div>
+
+
+
+
+
+                    </div>
+
+                </div>
             </div>
             <div class="selected-arrow ${index === 49 ? 'hidden' : 'visible'}" id="arrow-right"><span class="arrow-content">></span></div>
             <div class="selected-arrow ${index === 0 ? 'hidden' : 'visible'}" id="arrow-left"><span class="arrow-content"><</span></div>
         `
         this._overlayDouble.insertAdjacentHTML('afterbegin', html)
         this._blankSelectedCard = document.querySelector('.selected-container')
-        
+        this._selectedDisplay = document.querySelector('.selected--display')
     }
 
-    renderCompanySelected(company, stats) {
-        const html = `
-            <div class="selected-container--overlay">
-                <div class="selected--head">
-                    ${company.name}
-                </div>
-                <div class="selected--options">
-                    <div class="selected--options-option active" id="options-graph" data-view-id="display-view--graph">Graph</div>
-                    <div class="selected--options-option" id="options-info" data-view-id="display-view--info">Info</div>
-                    <div class="selected--options-option" id="options-stats" data-view-id="display-view--stats">Stats</div>
-                </div>
-                <div class="selected--display">
-                    <div class="selected--display-view visible" id="display-view--graph">
-                        <div class="canvas">
-                            <img class="graph--spinner" src="${spinner}">
-                        </div>
-                        <div class="view--graph-buttons">
-                            <div class="view--graph-buttons--button active" id="graph-button--month" data-days-span="30">Month</div>
-                            <div class="view--graph-buttons--button" id="graph-button--quarter" data-days-span="90">Quarter</div>
-                            <div class="view--graph-buttons--button" id="graph-button--year" data-days-span="365">Year</div>
-                        </div>
-                    </div>
-                    <div class="selected--display-view hidden" id="display-view--info">
-                        <div class="view--info-about">
-                            ${company.description}
-                        </div>
-                        <div class="view--info-container">
-                            <div class="view--info-item">
-                                <p class="data-label">Sector</p>
-                                <p class="data-content">${this._capitalizeString(company.sector)}</p>
-                            </div>
-                            <div class="view--info-item">
-                                <p class="data-label">Address</p>
-                                <p class="data-content">${this._capitalizeWords(company.address)}</p>
-                            </div>
-                            <div class="view--info-item">
-                                <p class="data-label">Market capitalization</p>
-                                <p class="data-content">${numeral(company.marketCap).format('$0,0')}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="selected--display-view hidden" id="display-view--stats">
-                        <div class="stats-grid">
-                            <div class="stat-item--container">
-                                <div class="stat-item">
-                                    <p class="data-label">Total revenue</p>
-                                    <p class="data-content">${numeral(stats.totalRevenue).format('$0,0')}</p>
-                                </div>
-                            </div>
-                            <div class="stat-item--container">
-                                <div class="stat-item">
-                                    <p class="data-label">Gross profit</p>
-                                    <p class="data-content">${numeral(stats.grossProfit).format('$0,0')}</p>
-                                </div>
-                            </div>
-                            <div class="stat-item--container">
-                                <div class="stat-item">
-                                    <p class="data-label">Depreciation</p>
-                                    <p class="data-content">${numeral(stats.depreciation).format('$0,0')}</p>
-                                </div>
-                            </div>
-                            <div class="stat-item--container">
-                                <div class="stat-item">
-                                    <p class="data-label">Interest Income</p>
-                                    <p class="data-content">${numeral(stats.interestIncome).format('$0,0')}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `
-        this._blankSelectedCard.querySelector('.selected--spinner').classList.add('hidden')
-        this._blankSelectedCard.insertAdjacentHTML('afterbegin', html)
-        this._blankSelectedCard.querySelectorAll('.selected--options-option').forEach(button => {
-
-        })
-    }
-
-    renderGraph(prices, timestamps) {
-
+    renderGraphView(prices, timestamps) {
         const canvas = document.createElement('canvas')
         canvas.id = 'graph'
         document.querySelector('.canvas').appendChild(canvas)
@@ -211,7 +169,7 @@ class View {
                         backgroundColor: function(context) {
                             const gradient = context.chart.ctx.createLinearGradient(0, 0, 0, context.chart.height)
                             gradient.addColorStop(0, 'rgba(242, 139, 130, 1)')
-                            gradient.addColorStop(1, 'rgba(242, 139, 130, 0)')
+                            gradient.addColorStop(.75, 'rgba(242, 139, 130, 0)')
                             return gradient
                         }
                     }
@@ -275,7 +233,64 @@ class View {
             }
         })
 
+        // Activate the graph options and selected options
         document.querySelectorAll('.view--graph-buttons--button').forEach(btn => btn.removeAttribute('style'))
+        this._blankSelectedCard.querySelectorAll('.selected--options-option').forEach(btn => btn.removeAttribute('style'))
+    }
+
+    renderInfoView(company) {
+        const html = `
+            <div class="view--info-about">
+                ${company.description}
+            </div>
+            <div class="view--info-container">
+                <div class="view--info-item">
+                    <p class="data-label">Sector</p>
+                    <p class="data-content">${this._capitalizeString(company.sector)}</p>
+                </div>
+                <div class="view--info-item">
+                    <p class="data-label">Address</p>
+                    <p class="data-content">${this._capitalizeWords(company.address)}</p>
+                </div>
+                <div class="view--info-item">
+                    <p class="data-label">Market capitalization</p>
+                    <p class="data-content">${numeral(company.marketCap).format('$0,0')}
+                </div>
+            </div>
+        `
+        document.getElementById('display-view--info').insertAdjacentHTML('afterbegin', html)
+    }
+
+    renderStatsView(stats) {
+        const html = `
+            <div class="stats-grid">
+                <div class="stat-item--container">
+                    <div class="stat-item">
+                        <p class="data-label">Total revenue</p>
+                        <p class="data-content">${numeral(stats.totalRevenue).format('$0,0')}</p>
+                    </div>
+                </div>
+                <div class="stat-item--container">
+                    <div class="stat-item">
+                        <p class="data-label">Gross profit</p>
+                        <p class="data-content">${numeral(stats.grossProfit).format('$0,0')}</p>
+                    </div>
+                </div>
+                <div class="stat-item--container">
+                    <div class="stat-item">
+                        <p class="data-label">Depreciation</p>
+                        <p class="data-content">${numeral(stats.depreciation).format('$0,0')}</p>
+                    </div>
+                </div>
+                <div class="stat-item--container">
+                    <div class="stat-item">
+                        <p class="data-label">Interest Income</p>
+                        <p class="data-content">${numeral(stats.interestIncome).format('$0,0')}</p>
+                    </div>
+                </div>
+            </div>
+        `
+        document.getElementById('display-view--stats').insertAdjacentHTML('afterbegin', html)
     }
 
     renderSpinner() {
@@ -310,12 +325,8 @@ class View {
                 ${message}
             </div>
         `
-        try {
-            this._blankSelectedCard.insertAdjacentHTML('afterbegin', html)
-            document.querySelector('.error-message').setAttribute('style', 'opacity:1')
-        } catch(error) {
-            console.error(error)
-        }
+        this._blankSelectedCard.insertAdjacentHTML('afterbegin', html)
+        document.querySelector('.error-message').setAttribute('style', 'opacity:1')
         
     }
 
@@ -325,19 +336,39 @@ class View {
         } catch(err) {
 
         } finally {
-            const existingError = document.getElementById('graph--error')
-            if (existingError) existingError.remove()
 
+            // Hide spinner
             document.querySelector('.graph--spinner').classList.remove('visible')
             document.querySelector('.graph--spinner').classList.add('hidden')
 
+            // Actvate graph options
             document.querySelectorAll('.view--graph-buttons--button').forEach(btn => btn.removeAttribute('style'))
 
             const error = document.createElement('div')
             error.id = 'graph--error'
             error.innerHTML = message
+            error.classList.add('hidden')
             document.querySelector('.canvas').appendChild(error)
+            error.classList.remove('hidden')
         }
+    }
+
+    renderInfoError(message) {
+        const html = `
+            <div id="info-error">
+                ${message}
+            </div>
+        `
+        document.getElementById('display-view--info').insertAdjacentHTML('afterbegin', html)
+    }
+
+    renderStatsError(message) {
+        const html = `
+            <div id="stats-error">
+                ${message}
+            </div>
+        `
+        document.getElementById('display-view--stats').insertAdjacentHTML('afterbegin', html)
     }
 
     showGrid() {
@@ -389,7 +420,7 @@ class View {
 
             this.enterSelectedMode()
             
-            handler(card.dataset.symbol, +card.dataset.index)
+            handler(card.dataset.symbol, +card.dataset.index, card.dataset.name)
         })
 
         this._overlayDouble.addEventListener('click', event => {
@@ -422,6 +453,7 @@ class View {
     }
 
     addArrowsHandler(handler) {
+        
         document.getElementById('arrow-right').addEventListener('click', () => {
             handler(DIRECTION_RIGHT)
         })
@@ -449,7 +481,7 @@ class View {
         document.body.removeAttribute('style')
     }
 
-    desactivateSelectOptions(optionID) {
+    resetSelectOptionsStyles(optionID) {
         document.querySelectorAll('.selected--options-option').forEach(button => {
             button.classList.remove('active')
             if (button.id === optionID) button.classList.add('active')
@@ -468,7 +500,7 @@ class View {
         })
     }
 
-    desactivateGraphOptions(optionID) {
+    resetGraphBtnStyles(optionID) {
         document.querySelectorAll('.view--graph-buttons--button').forEach(button => {
             button.classList.remove('active')
             if (button.id === optionID) button.classList.add('active')
@@ -476,12 +508,24 @@ class View {
     }
 
     removeCurrentGraph() {
-        document.getElementById('graph').remove()
-        const errorElement = document.getElementById('graph--error')
-        if (errorElement) errorElement.remove()
-        document.querySelector('.graph--spinner').classList.remove('hidden')
-        document.querySelector('.graph--spinner').classList.add('visible')
-        document.querySelectorAll('.view--graph-buttons--button').forEach(btn => btn.setAttribute('style', 'pointer-events: none;'))
+
+        try {
+
+            // empty the canvas div, except for the spinner
+            const spinner = document.querySelector('.graph--spinner').cloneNode()
+            document.querySelector('.canvas').innerHTML = ''
+            document.querySelector('.canvas').appendChild(spinner)
+
+            // display spinner
+            spinner.classList.remove('hidden')
+            spinner.classList.add('visible')
+
+            // disable the graph options until the API response arrives
+            document.querySelectorAll('.view--graph-buttons--button').forEach(btn => btn.setAttribute('style', 'pointer-events: none;'))
+        } catch(error) {
+            console.error(error)
+        }
+        
     }
 
     _formatMarketCap(marketCap) {

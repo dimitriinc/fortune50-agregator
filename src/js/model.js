@@ -1,4 +1,5 @@
 import * as helpers from './helpers'
+import * as errors from './errors'
 import { SELECT_MODE, SELECT_COMPANY, SELECT_EXCHANGE, stockExchanges } from './conifg'
 
 export const state = {
@@ -55,62 +56,94 @@ export const fetchCompanyProfile = async function(symbol) {
     }
 }
 
-export const fetchCompanyOverview = async function(symbolInput) {
-    try {
-        const url = helpers.getAlphaVantageOverviewUrl(symbolInput)
-        const data = await helpers.AJAX(url)
-
-        const { Name: name, Description: description, Sector: sector, Address: address, MarketCapitalization: marketCap, Symbol: symbol} = data
-        state.selectedCompany = {
-            name,
-            symbol,
-            description,
-            sector,
-            address,
-            marketCap
-        }
-
-        persistSelectedCompany()
-
-        if (Object.keys(data).length === 0) throw new Error("The company's data can't be reached")
-
-    } catch (error) {
-        console.error(error);
-        throw error
-    }
-}
+// SELECTED API CALLS
 
 export const fetchStockPrices = async function(symbol = state.selectedCompany.symbol) {
-    try {
-        const url = helpers.getPolygonAggregateUrl(symbol, state.dayInPast.getTime(), state.today.getTime())
-        const data = await helpers.AJAX(url)
 
-        if (!data.results) throw new Error("The company's stock prices can't be accessed")
-        
-        const stockPrices = data.results.map(obj => obj.c)
-        state.compressedStockPrices = helpers.compressStockPrices(stockPrices)
-        state.graphTimestamps = helpers.createGraphTimestamps(state.dayInPast, state.today)
-    } catch (error) {
-        throw error
-    }
+    return new Promise(async (resolve, reject) => {
+
+        try {
+
+            const url = helpers.getPolygonAggregateUrl(symbol, state.dayInPast.getTime(), state.today.getTime())
+            const data = await helpers.AJAX(url)
+    
+            if (!data.results) throw new errors.GraphError()
+            
+            const stockPrices = data.results.map(obj => obj.c)
+            state.compressedStockPrices = helpers.compressStockPrices(stockPrices)
+            state.graphTimestamps = helpers.createGraphTimestamps(state.dayInPast, state.today)
+
+            resolve("Graph promise is resolved")
+
+        } catch (error) {
+            reject(error)
+        }
+
+    })
+
+}
+
+export const fetchCompanyOverview = async function(symbolInput) {
+
+    return new Promise(async (resolve, reject) => {
+
+        try {
+            const url = helpers.getAlphaVantageOverviewUrl(symbolInput)
+            const data = await helpers.AJAX(url)
+    
+            if (Object.keys(data).length === 0) throw new errors.InfoError()
+    
+            const { Name: name, Description: description, Sector: sector, Address: address, MarketCapitalization: marketCap, Symbol: symbol} = data
+            state.selectedCompany = {
+                name,
+                symbol,
+                description,
+                sector,
+                address,
+                marketCap
+            }
+    
+            persistSelectedCompany()
+
+            resolve("Info promise is resolved")
+    
+        } catch (error) {
+            reject(error)
+        }
+
+    })
+    
 }
 
 export const fetchCompanyIncomeStatement = async function(symbol) {
-    try {
-        const url = helpers.getAlphaVantageIncomeUrl(symbol)
-        const data = await helpers.AJAX(url)
 
-        const { totalRevenue, grossProfit, depreciation, interestIncome } = data.annualReports[0]
-        state.companyStats = {
-            totalRevenue,
-            grossProfit,
-            depreciation,
-            interestIncome,
-        }        
-    } catch (error) {
-        throw error
-    }
+    return new Promise(async (resolve, reject) => {
+
+        try {
+
+            const url = helpers.getAlphaVantageIncomeUrl(symbol)
+            const data = await helpers.AJAX(url)
+    
+            if (Object.keys(data).length === 0) throw new errors.StatsError()
+    
+            const { totalRevenue, grossProfit, depreciation, interestIncome } = data.annualReports[0]
+            state.companyStats = {
+                totalRevenue,
+                grossProfit,
+                depreciation,
+                interestIncome,
+            }    
+            
+            resolve("Stats promise is resolved")
+
+        } catch (error) {
+            reject(error)
+        }
+    })
+    
 }
+
+//==================================================================================================//
 
 export const persistSelectedMode = function(selected) {
     localStorage.setItem(SELECT_MODE, String(selected))
@@ -146,4 +179,8 @@ export const updateSelectedIndex = function(index) {
 
 export const getSelectedSymbol = function() {
     return state.companies[state.selectedIndex].symbol
+}
+
+export const getSelectedName = function() {
+    return state.companies[state.selectedIndex].name
 }
