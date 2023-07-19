@@ -47,7 +47,6 @@ async function controlHashChange() {
 
         view.renderSpinner()
         
-
         await model.fetchCompaniesRating(stockExchange)
 
         model.persistSelectedExchange(stockExchange)

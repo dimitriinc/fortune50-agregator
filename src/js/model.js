@@ -166,7 +166,7 @@ export const actualizeStateOnInit = function () {
         if (company) state.selectedCompany = JSON.parse(company)
 
         const exchange = localStorage.getItem(SELECT_EXCHANGE)
-        exchange !== 'undefined' ? state.selectedExchange = exchange : state.selectedExchange = stockExchanges.nasdaq
+        exchange ? state.selectedExchange = exchange : state.selectedExchange = stockExchanges.nasdaq
     } catch(error) {
         throw new Error(error.message)
         
