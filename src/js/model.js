@@ -125,6 +125,7 @@ export const fetchCompanyIncomeStatement = async function(symbol) {
             const data = await helpers.AJAX(url)
     
             if (Object.keys(data).length === 0) throw new errors.StatsError()
+            if (!data.annualReports) throw new errors.StatsError()
     
             const { totalRevenue, grossProfit, depreciation, interestIncome } = data.annualReports[0]
             state.companyStats = {

@@ -17,6 +17,10 @@ class View {
     _blankSelectedCard
     _selectedDisplay
 
+
+
+    //============== RENDER METHODS ========================//
+
     renderOverlay() {
         const html = `
             <div class="overlay" data-visibility="${HIDDEN}">
@@ -150,147 +154,161 @@ class View {
     }
 
     renderGraphView(prices, timestamps) {
-        const canvas = document.createElement('canvas')
-        canvas.id = 'graph'
-        document.querySelector('.canvas').appendChild(canvas)
-        document.querySelector('.graph--spinner').classList.add('hidden')
 
-        new Chart(canvas, {
-            type: 'line',
-            data: {
-                labels: timestamps,
-                datasets: [
-                    {
-                        label: '',
-                        data: prices,
-                        fill: true,
-                        borderColor: "rgb(242, 139, 130)",
-                        tension: 0.1,
-                        backgroundColor: function(context) {
-                            const gradient = context.chart.ctx.createLinearGradient(0, 0, 0, context.chart.height)
-                            gradient.addColorStop(0, 'rgba(242, 139, 130, 1)')
-                            gradient.addColorStop(.75, 'rgba(242, 139, 130, 0)')
-                            return gradient
-                        }
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    x: {
-                        display: true,
-                        title: {
-                            display: false,
-                            text: "Time"
-                        },
-                        ticks: {
-                            autoSkip: false,
-                            maxRotation: 180,
-                            callback: function(value, index, values) {
-                                if (index === 0 || index === values.length - 1) {
-                                    return timestamps[value]
-                                } else {
-                                    return ''
-                                }
+        try {
+            const canvas = document.createElement('canvas')
+            canvas.id = 'graph'
+            document.querySelector('.canvas').appendChild(canvas)
+            document.querySelector('.graph--spinner').classList.add('hidden')
+    
+            new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: timestamps,
+                    datasets: [
+                        {
+                            label: '',
+                            data: prices,
+                            fill: true,
+                            borderColor: "rgb(242, 139, 130)",
+                            tension: 0.1,
+                            backgroundColor: function(context) {
+                                const gradient = context.chart.ctx.createLinearGradient(0, 0, 0, context.chart.height)
+                                gradient.addColorStop(0, 'rgba(242, 139, 130, 1)')
+                                gradient.addColorStop(.75, 'rgba(242, 139, 130, 0)')
+                                return gradient
                             }
                         }
-                    },
-                    y: {
-                        display: true,
-                        title: {
-                            display: true,
-                            text: "Stock Price"
-                        },
-                        ticks: {
-                            autoSkip: false,
-                            maxRotation: 0,
-                            callback: function(value, index, values) {
-                                if (index === 0 || index === values.length - 1) {
-                                    return `$${value}`
-                                } else {
-                                    return ''
-                                }
-                            }
-                        }
-                    }
+                    ]
                 },
-                plugins: {
-                    legend: {
-                      display: false
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: false,
+                                text: "Time"
+                            },
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 180,
+                                callback: function(value, index, values) {
+                                    if (index === 0 || index === values.length - 1) {
+                                        return timestamps[value]
+                                    } else {
+                                        return ''
+                                    }
+                                }
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: "Stock Price"
+                            },
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 0,
+                                callback: function(value, index, values) {
+                                    if (index === 0 || index === values.length - 1) {
+                                        return `$${value}`
+                                    } else {
+                                        return ''
+                                    }
+                                }
+                            }
+                        }
                     },
-                    tooltip: {
-                        callbacks: {
-                          label: function (context) {
-                            return context.dataset.data[context.dataIndex].toString()
-                          },
-                          title: function () {
-                            return null
-                          }
+                    plugins: {
+                        legend: {
+                          display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                              label: function (context) {
+                                return context.dataset.data[context.dataIndex].toString()
+                              },
+                              title: function () {
+                                return null
+                              }
+                            }
                         }
                     }
                 }
-            }
-        })
-
-        // Activate the graph options and selected options
-        document.querySelectorAll('.view--graph-buttons--button').forEach(btn => btn.removeAttribute('style'))
-        this._blankSelectedCard.querySelectorAll('.selected--options-option').forEach(btn => btn.removeAttribute('style'))
+            })
+    
+            // Activate the graph options
+            document.querySelectorAll('.view--graph-buttons--button').forEach(btn => btn.removeAttribute('style'))
+        } catch(error) {
+            this.renderGraphError(error.message)
+        }
+        
     }
 
     renderInfoView(company) {
-        const html = `
-            <div class="view--info-about">
-                ${company.description}
-            </div>
-            <div class="view--info-container">
-                <div class="view--info-item">
-                    <p class="data-label">Sector</p>
-                    <p class="data-content">${this._capitalizeString(company.sector)}</p>
+        try {
+            const html = `
+                <div class="view--info-about">
+                    ${company.description}
                 </div>
-                <div class="view--info-item">
-                    <p class="data-label">Address</p>
-                    <p class="data-content">${this._capitalizeWords(company.address)}</p>
+                <div class="view--info-container">
+                    <div class="view--info-item">
+                        <p class="data-label">Sector</p>
+                        <p class="data-content">${this._capitalizeString(company.sector)}</p>
+                    </div>
+                    <div class="view--info-item">
+                        <p class="data-label">Address</p>
+                        <p class="data-content">${this._capitalizeWords(company.address)}</p>
+                    </div>
+                    <div class="view--info-item">
+                        <p class="data-label">Market capitalization</p>
+                        <p class="data-content">${numeral(company.marketCap).format('$0,0')}
+                    </div>
                 </div>
-                <div class="view--info-item">
-                    <p class="data-label">Market capitalization</p>
-                    <p class="data-content">${numeral(company.marketCap).format('$0,0')}
-                </div>
-            </div>
-        `
-        document.getElementById('display-view--info').insertAdjacentHTML('afterbegin', html)
+            `
+            document.getElementById('display-view--info').insertAdjacentHTML('afterbegin', html)
+        } catch (error) {
+            this.renderInfoError(error.message)
+        }
+        
     }
 
     renderStatsView(stats) {
-        const html = `
-            <div class="stats-grid">
-                <div class="stat-item--container">
-                    <div class="stat-item">
-                        <p class="data-label">Total revenue</p>
-                        <p class="data-content">${numeral(stats.totalRevenue).format('$0,0')}</p>
+        try {
+            const html = `
+                <div class="stats-grid">
+                    <div class="stat-item--container">
+                        <div class="stat-item">
+                            <p class="data-label">Total revenue</p>
+                            <p class="data-content">${numeral(stats.totalRevenue).format('$0,0')}</p>
+                        </div>
+                    </div>
+                    <div class="stat-item--container">
+                        <div class="stat-item">
+                            <p class="data-label">Gross profit</p>
+                            <p class="data-content">${numeral(stats.grossProfit).format('$0,0')}</p>
+                        </div>
+                    </div>
+                    <div class="stat-item--container">
+                        <div class="stat-item">
+                            <p class="data-label">Depreciation</p>
+                            <p class="data-content">${numeral(stats.depreciation).format('$0,0')}</p>
+                        </div>
+                    </div>
+                    <div class="stat-item--container">
+                        <div class="stat-item">
+                            <p class="data-label">Interest Income</p>
+                            <p class="data-content">${numeral(stats.interestIncome).format('$0,0')}</p>
+                        </div>
                     </div>
                 </div>
-                <div class="stat-item--container">
-                    <div class="stat-item">
-                        <p class="data-label">Gross profit</p>
-                        <p class="data-content">${numeral(stats.grossProfit).format('$0,0')}</p>
-                    </div>
-                </div>
-                <div class="stat-item--container">
-                    <div class="stat-item">
-                        <p class="data-label">Depreciation</p>
-                        <p class="data-content">${numeral(stats.depreciation).format('$0,0')}</p>
-                    </div>
-                </div>
-                <div class="stat-item--container">
-                    <div class="stat-item">
-                        <p class="data-label">Interest Income</p>
-                        <p class="data-content">${numeral(stats.interestIncome).format('$0,0')}</p>
-                    </div>
-                </div>
-            </div>
-        `
-        document.getElementById('display-view--stats').insertAdjacentHTML('afterbegin', html)
+            `
+            document.getElementById('display-view--stats').insertAdjacentHTML('afterbegin', html)
+        } catch (error) {
+            this.renderStatsError(error.message)
+        }
     }
 
     renderSpinner() {
@@ -371,6 +389,8 @@ class View {
         document.getElementById('display-view--stats').insertAdjacentHTML('afterbegin', html)
     }
 
+    //=============================================================================================//
+
     showGrid() {
         if (document.querySelector('.error-message')) document.querySelector('.error-message').remove()
         this._gridContainer.setAttribute('style', 'opacity:1')
@@ -394,6 +414,9 @@ class View {
             this._nasdaqBtn.classList.add('active')
         }
     }
+
+
+    //=============== ADD HANDLERS ==========================//
 
     addHashHandler(handler) {
         window.addEventListener('hashchange', handler)
@@ -462,6 +485,8 @@ class View {
         })
     }
 
+    //==============================================================================//
+
     enterSelectedMode() {
         this._overlay.classList.add('visible')
         this._overlayDouble.classList.remove('hidden')
@@ -476,9 +501,12 @@ class View {
         this._overlay.classList.remove('visible')
         this._overlayDouble.classList.add('hidden')
         this._overlayDouble.innerHTML = ''
-        // this._overlay.firstElementChild.remove()
 
         document.body.removeAttribute('style')
+    }
+
+    activateSelectedOptionsButtons() {
+        this._blankSelectedCard.querySelectorAll('.selected--options-option').forEach(btn => btn.removeAttribute('style'))
     }
 
     resetSelectOptionsStyles(optionID) {

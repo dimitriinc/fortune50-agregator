@@ -87,11 +87,14 @@ async function controlSelect(symbol, index, name) {
         if (statsPromise.status === 'fulfilled') view.renderStatsView(model.state.companyStats)
         else view.renderStatsError(statsPromise.reason.message)
 
+        view.activateSelectedOptionsButtons()
+
         // view.renderCompanySelected(model.state.selectedCompany, model.state.companyStats)
         // view.renderGraph(model.state.compressedStockPrices, model.state.graphTimestamps)
         // model.persistSelectedMode(true)
     } catch (error) {
         view.renderSelectError(error.message)
+        console.error(error)
         model.persistSelectedMode(false)
     }
 }
