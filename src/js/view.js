@@ -2,6 +2,7 @@ import spinner from '../images/spinner.svg'
 import { stockExchanges, VISIBLE, HIDDEN, DIRECTION_LEFT, DIRECTION_RIGHT } from './conifg'
 import numeral from 'numeral'
 import Chart from 'chart.js/auto'
+import { delay } from './helpers'
 
 
 class View {
@@ -99,12 +100,16 @@ class View {
         this._gridContainer.insertAdjacentHTML('beforeend', html)
     }
 
-    renderSelectedCard(index, companyName) {
+    async renderSelectedCard(index, companyName, direction) {
+
+        const entranceAnimationClass = direction ? (direction === DIRECTION_LEFT ? 'appeared-from-left' : 'appeared-from-right') : 'grown-from-center'
+
+        if (direction) await this.renderCardExit(direction)
 
         if (+this._overlay.dataset.visibility === VISIBLE) this._overlayDouble.innerHTML = ''
 
         const html = `
-            <div class="selected-container">
+            <div class="selected-container ${entranceAnimationClass}" data-anim="${entranceAnimationClass}">
                 <div class="selected-container--overlay">
 
                     <div class="selected--head">
@@ -151,6 +156,14 @@ class View {
         this._overlayDouble.insertAdjacentHTML('afterbegin', html)
         this._blankSelectedCard = document.querySelector('.selected-container')
         this._selectedDisplay = document.querySelector('.selected--display')
+    }
+
+    async renderCardExit(direction) {
+        const entranceAnimationClass = this._blankSelectedCard.dataset.anim
+        this._blankSelectedCard.classList.remove(entranceAnimationClass)
+        const exitAnimationClass = direction === DIRECTION_LEFT ? 'discarded-to-right' : 'discarded-to-left'
+        this._blankSelectedCard.classList.add(exitAnimationClass)
+        await delay(1)
     }
 
     renderGraphView(prices, timestamps) {

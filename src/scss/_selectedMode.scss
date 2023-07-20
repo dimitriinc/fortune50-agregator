@@ -47,6 +47,10 @@
                     padding: 1rem;
                     font-size: 2rem;
                     text-align: center;
+
+                    @include breakpoint-down(tablet) {
+                        font-size: 1.5rem;
+                    }
                 }
 
                 .selected--options {

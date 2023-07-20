@@ -9,6 +9,12 @@ const timeout = function(seconds) {
     })
 }
 
+export const delay = function(seconds) {
+    return new Promise(resolve => {
+        setTimeout(() => resolve(), seconds * 1000)
+    })
+}
+
 export const AJAX = async function(url) {
     try {
         const fetchPromise = fetch(url)

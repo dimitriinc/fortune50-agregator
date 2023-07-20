@@ -70,10 +70,12 @@ function controlExchangeButtons(mic) {
     window.location.hash = mic
 }
 
-async function controlSelect(symbol, index, name) {
+async function controlSelect(symbol, index, name, direction = undefined) {
+
     try {
         model.updateSelectedIndex(index)
-        view.renderSelectedCard(index, name)
+
+        await view.renderSelectedCard(index, name, direction)
         view.addArrowsHandler(controlSelectArrows)
         const [infoPromise, graphPromise, statsPromise] = await Promise.allSettled([model.fetchCompanyOverview(symbol), model.fetchStockPrices(symbol), model.fetchCompanyIncomeStatement(symbol)])
 
@@ -88,8 +90,6 @@ async function controlSelect(symbol, index, name) {
 
         view.activateSelectedOptionsButtons()
 
-        // view.renderCompanySelected(model.state.selectedCompany, model.state.companyStats)
-        // view.renderGraph(model.state.compressedStockPrices, model.state.graphTimestamps)
         // model.persistSelectedMode(true)
     } catch (error) {
         view.renderSelectError(error.message)
@@ -130,7 +130,7 @@ async function controlSelectArrows(direction) {
 
     const newSymbol = model.getSelectedSymbol()
     const newName = model.getSelectedName()
-    await controlSelect(newSymbol, model.state.selectedIndex, newName)
+    await controlSelect(newSymbol, model.state.selectedIndex, newName, direction)
 }
 
 
