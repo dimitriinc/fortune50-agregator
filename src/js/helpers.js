@@ -1,4 +1,4 @@
-import { TimeoutError } from './errors'
+import { GraphError, TimeoutError } from './errors'
 import * as config from './conifg'
 
 const timeout = function(seconds) {
@@ -19,8 +19,11 @@ export const AJAX = async function(url) {
     try {
         const fetchPromise = fetch(url)
         const response = await Promise.race([fetchPromise, timeout(config.TIMEOUT_SEC)])
-        const data = await response.json()
-        if (!response.ok) throw new Error(data.message)
+
+        if (response.status === 429) throw new GraphError('The limit of API calls per minute (5) has been exceeded. Wait a bit to request the stock prices again.')
+        if (!response.ok) throw new Error(response.statusText)
+
+        const data = await response.json()  
         return data
     } catch (error) {
         throw error
@@ -48,7 +51,7 @@ export const getAlphaVantageIncomeUrl = function(symbol) {
 }
 
 export const getPolygonAggregateUrl = function(symbol, pastTimestamp, todayTimestamp) {
-    return`${config.POLYGON_IO_BASE_URL}aggs/ticker/${symbol}/range/1/day/${pastTimestamp}/${todayTimestamp}?&limit=30&apiKey=${config.apiKeys.polygon_io}`
+    return`${config.POLYGON_IO_BASE_URL}aggs/ticker/${symbol}/range/1/day/${pastTimestamp}/${todayTimestamp}?apiKey=${config.apiKeys.polygon_io}`
 }
 
 export const getDates = function(daysAgo) {
@@ -74,21 +77,21 @@ export const compressStockPrices = function(stockPrices) {
 }
 
 export const createGraphTimestamps = function(pastDate, todayDate) {
-    const numberOfIntervals = config.COMPRESSED_SIZE
     const timestamps = []
-    const startTime = pastDate.getTime()
-    const endTime = todayDate.getTime()
-    const interval = (endTime - startTime) / numberOfIntervals
 
-    for (let i = 0; i < numberOfIntervals; i++) {
-        const date = new Date(startTime + i * interval)
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = String(date.getFullYear()).slice(2);
-
-        const formattedDate = `${day}/${month}/${year}`;
-        timestamps.push(formattedDate)
+    for (let i = 0; i < config.COMPRESSED_SIZE; i++) {
+        if (i === 0) timestamps.push(buildDateString(pastDate))
+        if (i === config.COMPRESSED_SIZE - 1) timestamps.push(buildDateString(todayDate))
+        else timestamps.push(i.toString())
     }
 
     return timestamps
+}
+
+const buildDateString = function(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear()).slice(2);
+
+    return `${day}/${month}/${year}`;
 }

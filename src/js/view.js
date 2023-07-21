@@ -265,6 +265,7 @@ class View {
             // Activate the graph options
             document.querySelectorAll('.view--graph-buttons--button').forEach(btn => btn.removeAttribute('style'))
         } catch(error) {
+            console.error(error)
             this.renderGraphError(error.message)
         }
         

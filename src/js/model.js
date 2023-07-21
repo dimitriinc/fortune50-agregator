@@ -11,7 +11,7 @@ export const state = {
     dayInPast: undefined,
     compressedStockPrices: [],
     graphTimestamps: [],
-    modeSelected: false,
+    // modeSelected: false,
     companyStats: {},
 }
 
@@ -25,6 +25,8 @@ export const fetchCompaniesRating = async function(exchange) {
     try {
         const url = helpers.getFinModelPrepScreenerUrl(exchange)
         const data = await helpers.AJAX(url)
+
+        state.companies = []
 
         data.forEach((company, index) => {
             const { companyName: name, symbol, marketCap } = company
@@ -65,10 +67,9 @@ export const fetchStockPrices = async function(symbol = state.selectedCompany.sy
         try {
 
             const url = helpers.getPolygonAggregateUrl(symbol, state.dayInPast.getTime(), state.today.getTime())
-            const data = await helpers.AJAX(url)
-    
+            const data = await helpers.AJAX(url)    
             if (!data.results) throw new errors.GraphError()
-            
+
             const stockPrices = data.results.map(obj => obj.c)
             state.compressedStockPrices = helpers.compressStockPrices(stockPrices)
             state.graphTimestamps = helpers.createGraphTimestamps(state.dayInPast, state.today)
@@ -92,8 +93,10 @@ export const fetchCompanyOverview = async function(symbolInput) {
             const data = await helpers.AJAX(url)
     
             if (Object.keys(data).length === 0) throw new errors.InfoError()
+            if (Object.keys(data).length === 1) throw new errors.InfoError('We have reached our daily API call limit of 100 for today. Come back tomorrow :/')
     
             const { Name: name, Description: description, Sector: sector, Address: address, MarketCapitalization: marketCap, Symbol: symbol} = data
+                        
             state.selectedCompany = {
                 name,
                 symbol,
@@ -103,8 +106,6 @@ export const fetchCompanyOverview = async function(symbolInput) {
                 marketCap
             }
     
-            persistSelectedCompany()
-
             resolve("Info promise is resolved")
     
         } catch (error) {
@@ -125,6 +126,8 @@ export const fetchCompanyIncomeStatement = async function(symbol) {
             const data = await helpers.AJAX(url)
     
             if (Object.keys(data).length === 0) throw new errors.StatsError()
+            if (Object.keys(data).length === 1) throw new errors.InfoError('We have reached our daily API call limit of 100 for today. Come back tomorrow :/')
+
             if (!data.annualReports) throw new errors.StatsError()
     
             const { totalRevenue, grossProfit, depreciation, interestIncome } = data.annualReports[0]
@@ -146,14 +149,14 @@ export const fetchCompanyIncomeStatement = async function(symbol) {
 
 //==================================================================================================//
 
-export const persistSelectedMode = function(selected) {
-    localStorage.setItem(SELECT_MODE, String(selected))
-    state.modeSelected = selected
-}
+// export const persistSelectedMode = function(selected) {
+//     localStorage.setItem(SELECT_MODE, String(selected))
+//     state.modeSelected = selected
+// }
 
-export const persistSelectedCompany = function() {
-    localStorage.setItem(SELECT_COMPANY, JSON.stringify(state.selectedCompany))
-}
+// export const persistSelectedCompany = function() {
+//     localStorage.setItem(SELECT_COMPANY, JSON.stringify(state.selectedCompany))
+// }
 
 export const persistSelectedExchange = function(exchange) {
     localStorage.setItem(SELECT_EXCHANGE, exchange)
@@ -161,9 +164,9 @@ export const persistSelectedExchange = function(exchange) {
 
 export const actualizeStateOnInit = function () {
     try {
-        localStorage.getItem(SELECT_MODE) === 'true' ? state.modeSelected = true : state.modeSelected = false
-        const company = localStorage.getItem(SELECT_COMPANY)
-        if (company) state.selectedCompany = JSON.parse(company)
+        // localStorage.getItem(SELECT_MODE) === 'true' ? state.modeSelected = true : state.modeSelected = false
+        // const company = localStorage.getItem(SELECT_COMPANY)
+        // if (company) state.selectedCompany = JSON.parse(company)
 
         const exchange = localStorage.getItem(SELECT_EXCHANGE)
         exchange ? state.selectedExchange = exchange : state.selectedExchange = stockExchanges.nasdaq
@@ -184,4 +187,8 @@ export const getSelectedSymbol = function() {
 
 export const getSelectedName = function() {
     return state.companies[state.selectedIndex].name
+}
+
+export const setCompanySymbol = function(symbol) {
+    state.selectedCompany.symbol = symbol
 }

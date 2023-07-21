@@ -7,17 +7,16 @@ async function init() {
 
     try {
         model.actualizeStateOnInit()
-        model.setDates(DAYS_AGO_MONTH)    
 
         view.renderOverlay()
         view.renderHeader()
         view.renderMain()
         view.renderFooter()
 
-        if (model.state.modeSelected) {
-            view.enterSelectedMode()
-            await controlSelect(model.state.selectedCompany.symbol, model.state.selectedIndex, model.state.selectedCompany.name)
-        }
+        // if (model.state.modeSelected) {
+        //     view.enterSelectedMode()
+        //     await controlSelect(model.state.selectedCompany.symbol, model.state.selectedIndex, model.state.selectedCompany.name)
+        // }
 
         view.addHashHandler(controlHashChange)
         view.addExchangeHandler(controlExchangeButtons)
@@ -52,6 +51,7 @@ async function controlHashChange() {
         model.persistSelectedExchange(stockExchange)
 
         view.highlightExchange(stockExchange)
+
         model.state.companies.forEach(company => {
             view.renderCompany(company)
         })
@@ -62,7 +62,7 @@ async function controlHashChange() {
     } catch (error) {
         view.renderError(error.message)
         history.replaceState({}, document.title, window.location.href.split('#')[0])
-        model.persistSelectedMode(false)
+        // model.persistSelectedMode(false)
     }
 }
 
@@ -74,9 +74,12 @@ async function controlSelect(symbol, index, name, direction = undefined) {
 
     try {
         model.updateSelectedIndex(index)
+        model.setCompanySymbol(symbol)
+        model.setDates(DAYS_AGO_MONTH)
 
         await view.renderSelectedCard(index, name, direction)
         view.addArrowsHandler(controlSelectArrows)
+
         const [infoPromise, graphPromise, statsPromise] = await Promise.allSettled([model.fetchCompanyOverview(symbol), model.fetchStockPrices(symbol), model.fetchCompanyIncomeStatement(symbol)])
 
         if (graphPromise.status === 'fulfilled') view.renderGraphView(model.state.compressedStockPrices, model.state.graphTimestamps)
@@ -90,17 +93,17 @@ async function controlSelect(symbol, index, name, direction = undefined) {
 
         view.activateSelectedOptionsButtons()
 
-        model.persistSelectedMode(true)
+        // model.persistSelectedMode(true)
     } catch (error) {
         view.renderSelectError(error.message)
-        console.error(error)
-        model.persistSelectedMode(false)
+        // console.error(error)
+        // model.persistSelectedMode(false)
     }
 }
 
 function controlDeselect() {
     view.exitSelectedMode()
-    model.persistSelectedMode(false)
+    // model.persistSelectedMode(false)
 }
 
 function controlSelectOptions(viewID, buttonID) {
@@ -109,6 +112,7 @@ function controlSelectOptions(viewID, buttonID) {
 }
 
 async function controlGraphOptions(daysSpan, buttonID) {
+
     try {
         view.resetGraphBtnStyles(buttonID)
         view.removeCurrentGraph()
@@ -116,7 +120,7 @@ async function controlGraphOptions(daysSpan, buttonID) {
         await model.fetchStockPrices()
         view.renderGraphView(model.state.compressedStockPrices, model.state.graphTimestamps)
     } catch(error) {
-        view.renderGraphError('The limit of API calls per minute (5) is expired. Wait a bit to request the stock prices again.')
+        view.renderGraphError(error.message)
     }
     
 }
@@ -130,6 +134,7 @@ async function controlSelectArrows(direction) {
 
     const newSymbol = model.getSelectedSymbol()
     const newName = model.getSelectedName()
+
     await controlSelect(newSymbol, model.state.selectedIndex, newName, direction)
 }
 
