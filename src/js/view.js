@@ -4,6 +4,12 @@ import numeral from 'numeral'
 import Chart from 'chart.js/auto'
 import { delay } from './helpers'
 
+import whoosh from '../audio/whoosh.wav'
+import roblox from '../audio/roblox.mp3'
+import fart from '../audio/fart.wav'
+import coin from '../audio/coin.mp3'
+import flashback from '../audio/flashback.mp3'
+
 
 class View {
 
@@ -17,6 +23,8 @@ class View {
     _overlayDouble
     _blankSelectedCard
     _selectedDisplay
+
+    _sounds = [new Audio(whoosh), new Audio(roblox), new Audio(fart), new Audio(coin), new Audio(flashback)]
 
 
 
@@ -163,7 +171,9 @@ class View {
         this._blankSelectedCard.classList.remove(entranceAnimationClass)
         const exitAnimationClass = direction === DIRECTION_LEFT ? 'discarded-to-right' : 'discarded-to-left'
         this._blankSelectedCard.classList.add(exitAnimationClass)
+        this._sounds[Math.floor(Math.random() * this._sounds.length)].play()
         await delay(1)
+        this._sounds[Math.floor(Math.random() * this._sounds.length)].play()
     }
 
     renderGraphView(prices, timestamps) {

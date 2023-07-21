@@ -90,7 +90,7 @@ async function controlSelect(symbol, index, name, direction = undefined) {
 
         view.activateSelectedOptionsButtons()
 
-        // model.persistSelectedMode(true)
+        model.persistSelectedMode(true)
     } catch (error) {
         view.renderSelectError(error.message)
         console.error(error)
