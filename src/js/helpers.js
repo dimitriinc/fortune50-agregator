@@ -51,7 +51,11 @@ export const getAlphaVantageIncomeUrl = function(symbol) {
 }
 
 export const getPolygonAggregateUrl = function(symbol, pastTimestamp, todayTimestamp) {
-    return`${config.POLYGON_IO_BASE_URL}aggs/ticker/${symbol}/range/1/day/${pastTimestamp}/${todayTimestamp}?apiKey=${config.apiKeys.polygon_io}`
+    return`${config.POLYGON_IO_BASE_URL}v2/aggs/ticker/${symbol}/range/1/day/${pastTimestamp}/${todayTimestamp}?apiKey=${config.apiKeys.polygon_io}`
+}
+
+export const getPolygonTickerDetailsUrl = function(symbol) {
+    return `${config.POLYGON_IO_BASE_URL}v3/reference/tickers/${symbol}?apiKey=${config.apiKeys.polygon_io}`
 }
 
 export const getDates = function(daysAgo) {

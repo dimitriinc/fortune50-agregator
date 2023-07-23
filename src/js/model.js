@@ -13,6 +13,12 @@ export const state = {
     graphTimestamps: [],
     // modeSelected: false,
     companyStats: {},
+    statistics: {
+        totalRevenue: new Map(),
+        grossProfit: new Map(),
+        depreciation: new Map(),
+        interestIncome: new Map()
+    },
 }
 
 export const setDates = function(daysAgo) {
@@ -47,6 +53,8 @@ export const fetchCompaniesRating = async function(exchange) {
     }
 }
 
+// ================== API calls that are not in use currently =========================================
+
 export const fetchCompanyProfile = async function(symbol) {
     try {
         const url = helpers.getFinModelPrepProfilerUrl(symbol)
@@ -56,32 +64,6 @@ export const fetchCompanyProfile = async function(symbol) {
     } catch (error) {
         throw error
     }
-}
-
-// SELECTED API CALLS
-
-export const fetchStockPrices = async function(symbol = state.selectedCompany.symbol) {
-
-    return new Promise(async (resolve, reject) => {
-
-        try {
-
-            const url = helpers.getPolygonAggregateUrl(symbol, state.dayInPast.getTime(), state.today.getTime())
-            const data = await helpers.AJAX(url)    
-            if (!data.results) throw new errors.GraphError()
-
-            const stockPrices = data.results.map(obj => obj.c)
-            state.compressedStockPrices = helpers.compressStockPrices(stockPrices)
-            state.graphTimestamps = helpers.createGraphTimestamps(state.dayInPast, state.today)
-
-            resolve("Graph promise is resolved")
-
-        } catch (error) {
-            reject(error)
-        }
-
-    })
-
 }
 
 export const fetchCompanyOverview = async function(symbolInput) {
@@ -116,6 +98,70 @@ export const fetchCompanyOverview = async function(symbolInput) {
     
 }
 
+// ========================================================================================================
+
+
+// SELECTED API CALLS
+
+export const fetchStockPrices = async function(symbol = state.selectedCompany.symbol) {
+
+    return new Promise(async (resolve, reject) => {
+
+        try {
+
+            const url = helpers.getPolygonAggregateUrl(symbol, state.dayInPast.getTime(), state.today.getTime())
+            const data = await helpers.AJAX(url)    
+            if (!data.results) throw new errors.GraphError()
+
+            const stockPrices = data.results.map(obj => obj.c)
+            state.compressedStockPrices = helpers.compressStockPrices(stockPrices)
+            state.graphTimestamps = helpers.createGraphTimestamps(state.dayInPast, state.today)
+
+            resolve("Graph promise is resolved")
+
+        } catch (error) {
+            reject(error)
+        }
+
+    })
+
+}
+
+export const fetchTickerDetails = async function(ticker) {
+
+    return new Promise(async (resolve, reject) => {
+
+        try {
+            const url = helpers.getPolygonTickerDetailsUrl(ticker)
+            const data = await helpers.AJAX(url)
+            const results = data.results
+
+            if (!results) throw new errors.InfoError()
+
+            const address = [results.address.address1, results.address.city, results.address.state].join(', ')
+
+            const {name, ticker: symbol, description, market_cap: marketCap, sic_description: sector, homepage_url: website} = results
+
+            state.selectedCompany = {
+                name,
+                symbol,
+                description,
+                marketCap,
+                sector,
+                address,
+                website
+            }
+            
+            resolve("Info promise is resolved")
+
+            
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+
 export const fetchCompanyIncomeStatement = async function(symbol) {
 
     return new Promise(async (resolve, reject) => {
@@ -129,14 +175,15 @@ export const fetchCompanyIncomeStatement = async function(symbol) {
             if (Object.keys(data).length === 1) throw new errors.InfoError('We have reached our daily API call limit of 100 for today. Come back tomorrow :/')
 
             if (!data.annualReports) throw new errors.StatsError()
-    
-            const { totalRevenue, grossProfit, depreciation, interestIncome } = data.annualReports[0]
-            state.companyStats = {
-                totalRevenue,
-                grossProfit,
-                depreciation,
-                interestIncome,
-            }    
+
+
+            for (let i = data.annualReports.length - 1; i >= 0 ; i--) {
+                const year = data.annualReports[i].fiscalDateEnding.slice(0,4)
+                state.statistics.totalRevenue.set(year, +data.annualReports[i].totalRevenue)
+                state.statistics.grossProfit.set(year, +data.annualReports[i].grossProfit)
+                state.statistics.depreciation.set(year, +data.annualReports[i].depreciation)
+                state.statistics.interestIncome.set(year, +data.annualReports[i].interestIncome)
+            }
             
             resolve("Stats promise is resolved")
 
@@ -191,4 +238,8 @@ export const getSelectedName = function() {
 
 export const setCompanySymbol = function(symbol) {
     state.selectedCompany.symbol = symbol
+}
+
+export const setCompanyName = function(name) {
+    state.selectedCompany.name = name
 }

@@ -19,7 +19,7 @@ export const HIDDEN = 0
 export const FIN_MODEL_PREP_BASE_URL = 'https://financialmodelingprep.com/api/v3/'
 export const FINNHUB_BASE_URL = 'https://finnhub.io/api/v1/stock/profile2'
 export const ALPHA_VANTAGE_BASE_URL = 'https://www.alphavantage.co/query'
-export const POLYGON_IO_BASE_URL = 'https://api.polygon.io/v2/'
+export const POLYGON_IO_BASE_URL = 'https://api.polygon.io/'
 
 export const apiKeys = {
     financialModelingPrep: '3b66c1e37986a93ef69f5159f9cdb4f7',

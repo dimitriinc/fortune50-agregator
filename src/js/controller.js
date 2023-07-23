@@ -75,12 +75,13 @@ async function controlSelect(symbol, index, name, direction = undefined) {
     try {
         model.updateSelectedIndex(index)
         model.setCompanySymbol(symbol)
+        model.setCompanyName(name)
         model.setDates(DAYS_AGO_MONTH)
 
         await view.renderSelectedCard(index, name, direction)
         view.addArrowsHandler(controlSelectArrows)
 
-        const [infoPromise, graphPromise, statsPromise] = await Promise.allSettled([model.fetchCompanyOverview(symbol), model.fetchStockPrices(symbol), model.fetchCompanyIncomeStatement(symbol)])
+        const [infoPromise, graphPromise, statsPromise] = await Promise.allSettled([model.fetchTickerDetails(symbol), model.fetchStockPrices(symbol), model.fetchCompanyIncomeStatement(symbol)])
 
         if (graphPromise.status === 'fulfilled') view.renderGraphView(model.state.compressedStockPrices, model.state.graphTimestamps)
         else view.renderGraphError(graphPromise.reason.message)
@@ -88,7 +89,7 @@ async function controlSelect(symbol, index, name, direction = undefined) {
         if (infoPromise.status === 'fulfilled') view.renderInfoView(model.state.selectedCompany)
         else view.renderInfoError(infoPromise.reason.message)
 
-        if (statsPromise.status === 'fulfilled') view.renderStatsView(model.state.companyStats)
+        if (statsPromise.status === 'fulfilled') view.renderStatsView(model.state.statistics)
         else view.renderStatsError(statsPromise.reason.message)
 
         view.activateSelectedOptionsButtons()

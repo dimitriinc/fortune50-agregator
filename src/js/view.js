@@ -251,7 +251,7 @@ class View {
                         tooltip: {
                             callbacks: {
                               label: function (context) {
-                                return context.dataset.data[context.dataIndex].toString()
+                                return `${numeral(context.dataset.data[context.dataIndex]).format('$0,0')}`
                               },
                               title: function () {
                                 return null
@@ -290,6 +290,10 @@ class View {
                         <p class="data-label">Market capitalization</p>
                         <p class="data-content">${numeral(company.marketCap).format('$0,0')}
                     </div>
+                    <div class="view--info-item">
+                        <p class="data-label">Website</p>
+                        <p class="data-content"><a href="${company.website}" target="_blank">${company.website}</a></p>
+                    </div>
                 </div>
             `
             document.getElementById('display-view--info').insertAdjacentHTML('afterbegin', html)
@@ -303,33 +307,67 @@ class View {
         try {
             const html = `
                 <div class="stats-grid">
-                    <div class="stat-item--container">
-                        <div class="stat-item">
-                            <p class="data-label">Total revenue</p>
-                            <p class="data-content">${numeral(stats.totalRevenue).format('$0,0')}</p>
-                        </div>
-                    </div>
-                    <div class="stat-item--container">
-                        <div class="stat-item">
-                            <p class="data-label">Gross profit</p>
-                            <p class="data-content">${numeral(stats.grossProfit).format('$0,0')}</p>
-                        </div>
-                    </div>
-                    <div class="stat-item--container">
-                        <div class="stat-item">
-                            <p class="data-label">Depreciation</p>
-                            <p class="data-content">${numeral(stats.depreciation).format('$0,0')}</p>
-                        </div>
-                    </div>
-                    <div class="stat-item--container">
-                        <div class="stat-item">
-                            <p class="data-label">Interest Income</p>
-                            <p class="data-content">${numeral(stats.interestIncome).format('$0,0')}</p>
-                        </div>
-                    </div>
+                    ${Object.keys(stats).map(this._generateStatsMarkup.bind(this)).join('')}
                 </div>
             `
             document.getElementById('display-view--stats').insertAdjacentHTML('afterbegin', html)
+
+            const entries = Object.entries(stats)
+            entries.forEach(([key, value]) => {
+                const years = Array.from(value.keys())
+                const numbers = Array.from(value.values())
+
+                const canvas = document.getElementById(`graph--${key}`).getContext('2d')
+
+                if (numbers.every(number => isNaN(number))) {
+                    const div = document.createElement('div')
+                    div.classList.add('na-message')
+                    div.textContent = 'Not available'
+                    document.getElementById(`graph--${key}`).replaceWith(div)
+                    return
+                }
+
+                
+                
+                new Chart(canvas, {
+                    type: "bar",
+                    data: {
+                        labels: years,
+                        datasets: [
+                            {
+                                label: "Values",
+                                data: numbers,
+                                backgroundColor: "rgb(242, 139, 130)",
+                            },
+                        ],
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                display: false,
+                            },
+                        },
+                        plugins: {
+                            legend: {
+                              display: false
+                            },
+                            tooltip: {
+                                
+                                callbacks: {
+                                  label: function (context) {
+                                    return `${numeral(context.dataset.data[context.dataIndex]).format('$0,0')}`
+                                  },
+                                  title: function () {
+                                    return null
+                                  }
+                                }
+                            }
+                        }
+                    },
+                    
+                })
+            })
         } catch (error) {
             this.renderStatsError(error.message)
         }
@@ -580,6 +618,23 @@ class View {
         
     }
 
+    // ======================= Private methods ===================================
+
+    _generateStatsMarkup(key) {
+        return `
+            <div class="stat-item--container">
+                <div class="stat-item">
+                    <p class="data-label">${this._capitalizeString(this._separateCamelCase(key))}</p>
+                    <canvas class="stat--canvas" id="graph--${key}"></canvas>
+                </div>
+            </div>
+        `
+    }
+
+    _separateCamelCase(string) {
+        return string.replace(/([a-z])([A-Z])/g, '$1 $2')
+    }
+
     _formatMarketCap(marketCap) {
         const formatter = new Intl.NumberFormat('en-US', {
             style: 'currency',
@@ -612,3 +667,29 @@ class View {
 }
 
 export default new View()
+
+
+{/* <div class="stat-item--container">
+    <div class="stat-item">
+        <p class="data-label">Total revenue</p>
+        <p class="data-content">${numeral(stats.totalRevenue).format('$0,0')}</p>
+    </div>
+</div>
+<div class="stat-item--container">
+    <div class="stat-item">
+        <p class="data-label">Gross profit</p>
+        <p class="data-content">${numeral(stats.grossProfit).format('$0,0')}</p>
+    </div>
+</div>
+<div class="stat-item--container">
+    <div class="stat-item">
+        <p class="data-label">Depreciation</p>
+        <p class="data-content">${numeral(stats.depreciation).format('$0,0')}</p>
+    </div>
+</div>
+<div class="stat-item--container">
+    <div class="stat-item">
+        <p class="data-label">Interest Income</p>
+        <p class="data-content">${numeral(stats.interestIncome).format('$0,0')}</p>
+    </div>
+</div> */}
