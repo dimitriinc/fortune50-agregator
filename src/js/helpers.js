@@ -1,4 +1,4 @@
-import { GraphError, TimeoutError } from './errors'
+import { Error404, GraphError, TimeoutError } from './errors'
 import * as config from './conifg'
 
 const timeout = function(seconds) {
@@ -15,15 +15,18 @@ export const delay = function(seconds) {
     })
 }
 
-export const AJAX = async function(url) {
+export const AJAX = async function(url, abortController) {
     try {
-        const fetchPromise = fetch(url)
+        const fetchPromise = fetch(url, {
+            signal: abortController.signal
+        })
         const response = await Promise.race([fetchPromise, timeout(config.TIMEOUT_SEC)])
 
+        if (response.status === 404) throw new Error404()
         if (response.status === 429) throw new GraphError('The limit of API calls per minute (5) has been exceeded. Wait a bit to request the stock prices again.')
         if (!response.ok) throw new Error(response.statusText)
 
-        const data = await response.json()  
+        const data = await response.json()
         return data
     } catch (error) {
         throw error

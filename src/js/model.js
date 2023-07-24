@@ -27,10 +27,10 @@ export const setDates = function(daysAgo) {
     state.today = dates[1]
 }
 
-export const fetchCompaniesRating = async function(exchange) {
+export const fetchCompaniesRating = async function(exchange, abortController) {
     try {
         const url = helpers.getFinModelPrepScreenerUrl(exchange)
-        const data = await helpers.AJAX(url)
+        const data = await helpers.AJAX(url, abortController)
 
         state.companies = []
 
@@ -103,14 +103,14 @@ export const fetchCompanyOverview = async function(symbolInput) {
 
 // SELECTED API CALLS
 
-export const fetchStockPrices = async function(symbol = state.selectedCompany.symbol) {
+export const fetchStockPrices = async function(symbol = state.selectedCompany.symbol, abortController) {
 
     return new Promise(async (resolve, reject) => {
 
         try {
 
             const url = helpers.getPolygonAggregateUrl(symbol, state.dayInPast.getTime(), state.today.getTime())
-            const data = await helpers.AJAX(url)    
+            const data = await helpers.AJAX(url, abortController)    
             if (!data.results) throw new errors.GraphError()
 
             const stockPrices = data.results.map(obj => obj.c)
@@ -127,13 +127,13 @@ export const fetchStockPrices = async function(symbol = state.selectedCompany.sy
 
 }
 
-export const fetchTickerDetails = async function(ticker) {
+export const fetchTickerDetails = async function(ticker, abortController) {
 
     return new Promise(async (resolve, reject) => {
 
         try {
             const url = helpers.getPolygonTickerDetailsUrl(ticker)
-            const data = await helpers.AJAX(url)
+            const data = await helpers.AJAX(url, abortController)
             const results = data.results
 
             if (!results) throw new errors.InfoError()
@@ -156,20 +156,21 @@ export const fetchTickerDetails = async function(ticker) {
 
             
         } catch (error) {
+            if (error instanceof errors.Error404) reject(new errors.InfoError())
             reject(error)
         }
     })
 }
 
 
-export const fetchCompanyIncomeStatement = async function(symbol) {
+export const fetchCompanyIncomeStatement = async function(symbol, abortController) {
 
     return new Promise(async (resolve, reject) => {
 
         try {
 
             const url = helpers.getAlphaVantageIncomeUrl(symbol)
-            const data = await helpers.AJAX(url)
+            const data = await helpers.AJAX(url, abortController)
     
             if (Object.keys(data).length === 0) throw new errors.StatsError()
             if (Object.keys(data).length === 1) throw new errors.InfoError('We have reached our daily API call limit of 100 for today. Come back tomorrow :/')

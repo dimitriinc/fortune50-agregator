@@ -25,3 +25,10 @@ export class TimeoutError extends Error {
         this.name = 'TimeoutError'
     }
 }
+
+export class Error404 extends Error {
+    constructor(message = "404: Not found") {
+        super(message)
+        this.name = 'Error404'
+    }
+}

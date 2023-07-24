@@ -6,8 +6,11 @@ Also, I decided to build the project with Webpack, which is my first experience 
 The user can choose the stock exchange, by default the companies of NASDAQ are displayed first. To get this initial data I use the Financial Modeling Prep API.
 When the user clicks on a company, a dialog is presented, containing three pieces of information:
 - history of stock prices for the selected company, presented in the form of a linear graph (constructed with the Char.js library). There are three time spans available for the historical data: month, quarter, year. Based on the selected option, I request the data from the Polygon.io API and get agregate bars over the selected date range, build and array of closing stock prices for the day, and feed the array to a resampling algorithm, that compresses the initial array into an array of a predefined length (for now it's 15). Then I feed the compressed array into a graph builder to display it on the screen. The idea is to dumb down the data and present the general trends of the company's evaluation. Also, I was curious about resampling algorithms.
-- general information about the company, like its description, address, sector, etc. The API I use to get this data is Alpha Vantage
-- some statistical numbers that help me to illustrate the company's performance over time, such as it total revenue, gross profit, depreciation, and interest income. Those stats are chosen by me on arbitrary basis. This data comes from Alpha Vantage API as well (different endpoint though).
+- general information about the company, like its description, address, sector, etc. The API I use to get this data is Polygon.io as well (different endpoint though).
+- some statistical numbers that help me to illustrate the company's performance over time, such as it total revenue, gross profit, depreciation, and interest income. Those stats are chosen by me on arbitrary basis. This data comes from Alpha Vantage API.
+
+## FIY
+All the data comes from free-tier APIs. For certain companies those APIs have no information at all. Additionally, there are limits for calls. For example Polygon.io has 5 calls per minute limit, Alpha Vantage doesn't allow more than 100 calls a day. All those restrictions I tried to mitigate with proper error handling, and display appropriate error messages instead of the data.
 
 ## Technologies
 - webpack 5.85.0

@@ -3,6 +3,13 @@ import * as model from './model'
 import view from './view'
 import { DAYS_AGO_MONTH, DIRECTION_LEFT} from './conifg'
 
+const abortControllers = {
+    ratingsAbortController: new AbortController(),
+    graphAbortController: new AbortController(),
+    infoAbortController: new AbortController(),
+    statsAbortController: new AbortController(),
+}
+
 async function init() {
 
     try {
@@ -46,7 +53,7 @@ async function controlHashChange() {
 
         view.renderSpinner()
         
-        await model.fetchCompaniesRating(stockExchange)
+        await model.fetchCompaniesRating(stockExchange, abortControllers.ratingsAbortController)
 
         model.persistSelectedExchange(stockExchange)
 
@@ -72,6 +79,8 @@ function controlExchangeButtons(mic) {
 
 async function controlSelect(symbol, index, name, direction = undefined) {
 
+    renewAbortControllers()
+
     try {
         model.updateSelectedIndex(index)
         model.setCompanySymbol(symbol)
@@ -81,7 +90,11 @@ async function controlSelect(symbol, index, name, direction = undefined) {
         await view.renderSelectedCard(index, name, direction)
         view.addArrowsHandler(controlSelectArrows)
 
-        const [infoPromise, graphPromise, statsPromise] = await Promise.allSettled([model.fetchTickerDetails(symbol), model.fetchStockPrices(symbol), model.fetchCompanyIncomeStatement(symbol)])
+        const [infoPromise, graphPromise, statsPromise] = await Promise.allSettled([
+            model.fetchTickerDetails(symbol, abortControllers.infoAbortController), 
+            model.fetchStockPrices(symbol, abortControllers.graphAbortController), 
+            model.fetchCompanyIncomeStatement(symbol, abortControllers.statsAbortController)
+        ])
 
         if (graphPromise.status === 'fulfilled') view.renderGraphView(model.state.compressedStockPrices, model.state.graphTimestamps)
         else view.renderGraphError(graphPromise.reason.message)
@@ -127,6 +140,8 @@ async function controlGraphOptions(daysSpan, buttonID) {
 }
 
 async function controlSelectArrows(direction) {
+    abortSelectedApiCalls()
+
     if (direction === DIRECTION_LEFT) {
         model.updateSelectedIndex(model.state.selectedIndex - 1)
     } else {
@@ -137,6 +152,19 @@ async function controlSelectArrows(direction) {
     const newName = model.getSelectedName()
 
     await controlSelect(newSymbol, model.state.selectedIndex, newName, direction)
+}
+
+function abortSelectedApiCalls() {
+    abortControllers.graphAbortController.abort()
+    abortControllers.infoAbortController.abort()
+    abortControllers.statsAbortController.abort()
+}
+
+function renewAbortControllers() {
+    abortControllers.ratingsAbortController = new AbortController()
+    abortControllers.graphAbortController = new AbortController()
+    abortControllers.infoAbortController = new AbortController()
+    abortControllers.statsAbortController = new AbortController()
 }
 
 

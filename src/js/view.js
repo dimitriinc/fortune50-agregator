@@ -272,6 +272,7 @@ class View {
     }
 
     renderInfoView(company) {
+
         try {
             const html = `
                 <div class="view--info-about">
@@ -292,7 +293,7 @@ class View {
                     </div>
                     <div class="view--info-item">
                         <p class="data-label">Website</p>
-                        <p class="data-content"><a href="${company.website}" target="_blank">${company.website}</a></p>
+                        <p class="data-content"><a href="${company.website}" target="_blank">${this._removeUrlPrefix(company.website)}</a></p>
                     </div>
                 </div>
             `
@@ -618,7 +619,7 @@ class View {
         
     }
 
-    // ======================= Private methods ===================================
+    // ======================= Private helper methods ===================================
 
     _generateStatsMarkup(key) {
         return `
@@ -664,32 +665,15 @@ class View {
         })
         return capitalizedWords.join(' ')
     }
+
+    _removeUrlPrefix(url) {
+        const httpPrefix = 'http://www.'
+        const httpsPrefix = 'https://www.'
+
+        if (url.startsWith(httpPrefix)) return url.slice(httpPrefix.length)
+        if (url.startsWith(httpsPrefix)) return url.slice(httpsPrefix.length)
+        else return url
+    }
 }
 
 export default new View()
-
-
-{/* <div class="stat-item--container">
-    <div class="stat-item">
-        <p class="data-label">Total revenue</p>
-        <p class="data-content">${numeral(stats.totalRevenue).format('$0,0')}</p>
-    </div>
-</div>
-<div class="stat-item--container">
-    <div class="stat-item">
-        <p class="data-label">Gross profit</p>
-        <p class="data-content">${numeral(stats.grossProfit).format('$0,0')}</p>
-    </div>
-</div>
-<div class="stat-item--container">
-    <div class="stat-item">
-        <p class="data-label">Depreciation</p>
-        <p class="data-content">${numeral(stats.depreciation).format('$0,0')}</p>
-    </div>
-</div>
-<div class="stat-item--container">
-    <div class="stat-item">
-        <p class="data-label">Interest Income</p>
-        <p class="data-content">${numeral(stats.interestIncome).format('$0,0')}</p>
-    </div>
-</div> */}

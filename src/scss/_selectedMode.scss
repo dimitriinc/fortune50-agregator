@@ -354,10 +354,8 @@
 
                             .stat-item--container {
                                 border: 1px solid;
-                                // border-radius: 50%;
                                 padding: 1rem;
-                                width: 80%;
-                                // height: 170px;
+                                width: 70%;
                                 display: flex;
                                 justify-self: center;
                                 justify-content: center;
@@ -365,6 +363,10 @@
 
                                 @include breakpoint-down(tablet) {
                                     width: 100%;
+                                }
+
+                                @include breakpoint-up(desktop) {
+                                    width: 50%;
                                 }
 
                                 .stat-item {
@@ -378,10 +380,6 @@
                                         margin: 1rem;
                                     }
                                 }
-                                // @include breakpoint-down(tablet) {
-                                //     width: 150px;
-                                //     height: 150px;
-                                // }
 
                                 
                             }
