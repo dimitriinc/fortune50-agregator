@@ -131,7 +131,7 @@ async function controlGraphOptions(daysSpan, buttonID) {
         view.resetGraphBtnStyles(buttonID)
         view.removeCurrentGraph()
         model.setDates(daysSpan)
-        await model.fetchStockPrices()
+        await model.fetchStockPrices(model.state.selectedCompany.symbol, abortControllers.graphAbortController)
         view.renderGraphView(model.state.compressedStockPrices, model.state.graphTimestamps)
     } catch(error) {
         view.renderGraphError(error.message)

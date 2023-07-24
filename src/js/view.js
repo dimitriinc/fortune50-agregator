@@ -181,9 +181,16 @@ class View {
         try {
             const canvas = document.createElement('canvas')
             canvas.id = 'graph'
+
+            // clean the parent element
+            const spinner = document.querySelector('.graph--spinner').cloneNode()
+            document.querySelector('.canvas').innerHTML = ''
+            document.querySelector('.canvas').appendChild(spinner)
+
+            spinner.classList.add('hidden')
             document.querySelector('.canvas').appendChild(canvas)
-            document.querySelector('.graph--spinner').classList.add('hidden')
-    
+
+            
             new Chart(canvas, {
                 type: 'line',
                 data: {
@@ -265,13 +272,14 @@ class View {
             // Activate the graph options
             document.querySelectorAll('.view--graph-buttons--button').forEach(btn => btn.removeAttribute('style'))
         } catch(error) {
-            console.error(error)
             this.renderGraphError(error.message)
         }
         
     }
 
     renderInfoView(company) {
+
+        document.getElementById('display-view--info').innerHTML = ''
 
         try {
             const html = `
@@ -306,6 +314,9 @@ class View {
 
     renderStatsView(stats) {
         try {
+
+            document.getElementById('display-view--stats').innerHTML = ''
+
             const html = `
                 <div class="stats-grid">
                     ${Object.keys(stats).map(this._generateStatsMarkup.bind(this)).join('')}
@@ -412,29 +423,29 @@ class View {
     }
 
     renderGraphError(message) {
-        try {
-            document.getElementById('graph').remove()
-        } catch(err) {
 
-        } finally {
+        const spinner = document.querySelector('.graph--spinner').cloneNode()
+        document.querySelector('.canvas').innerHTML = ''
+        document.querySelector('.canvas').appendChild(spinner)
 
-            // Hide spinner
-            document.querySelector('.graph--spinner').classList.remove('visible')
-            document.querySelector('.graph--spinner').classList.add('hidden')
+        // Hide spinner
+        spinner.classList.remove('visible')
+        spinner.classList.add('hidden')
 
-            // Actvate graph options
-            document.querySelectorAll('.view--graph-buttons--button').forEach(btn => btn.removeAttribute('style'))
+        // Actvate graph options
+        document.querySelectorAll('.view--graph-buttons--button').forEach(btn => btn.removeAttribute('style'))
 
-            const error = document.createElement('div')
-            error.id = 'graph--error'
-            error.innerHTML = message
-            error.classList.add('hidden')
-            document.querySelector('.canvas').appendChild(error)
-            error.classList.remove('hidden')
-        }
+        const error = document.createElement('div')
+        error.id = 'graph--error'
+        error.innerHTML = message
+        error.classList.add('hidden')
+        document.querySelector('.canvas').appendChild(error)
+        error.classList.remove('hidden')
+        
     }
 
     renderInfoError(message) {
+        document.getElementById('display-view--info').innerHTML = ''
         const html = `
             <div id="info-error">
                 ${message}
@@ -444,6 +455,7 @@ class View {
     }
 
     renderStatsError(message) {
+        document.getElementById('display-view--stats').innerHTML = ''
         const html = `
             <div id="stats-error">
                 ${message}
