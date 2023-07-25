@@ -154,6 +154,64 @@
                         flex-direction: column;
                         height: 100%;
 
+                        .fyi {
+                            position: absolute;
+                            left: 0;
+                            bottom: 0;
+                            z-index: 999;
+
+                            @include breakpoint-down(mobile) {
+                                bottom: 100%;
+                                top: 0;
+                                right: 0;
+
+                            }
+
+                            #fyi--icon {
+                                position: relative;
+                                width: fit-content;
+                                margin: auto;
+                                cursor: pointer;
+
+                                img {
+                                    width: 36px;
+                                    height: 36px;
+
+                                    @include breakpoint-down(tablet) {
+                                        width: 24px;
+                                        height: 24px;
+                                    }
+                                }
+
+                                #fyi--text {
+                                    position: absolute;
+                                    left: 40px;
+                                    top: -275%;
+                                    width: 300px;
+                                    padding: 1rem;
+                                    border: 1px solid;
+                                    border-radius: 3px;
+                                    background-color: $background_color;
+                                    cursor: auto;
+                                    transition: all .3s ease-in;
+
+                                    @include breakpoint-down(tablet) {
+                                        top: -390%;
+                                        left: 30px;
+                                        width: 240px;
+                                        font-size: 14px;
+                                    }
+
+                                    @include breakpoint-down(mobile) {
+                                        top: 130%;
+                                        padding: .5rem;
+                                        left: -110px;
+                                    }
+                                }
+
+                            }
+                        }
+
                         .canvas {
                             position: relative;
                             flex-grow: 1;
@@ -164,6 +222,10 @@
                             height: 75%;
 
                             #graph {
+                                
+                                @include breakpoint-down(mobile) {
+                                    transform: translateY(20%);
+                                }
                             }
                             
                             .graph--spinner {
@@ -326,18 +388,6 @@
                             margin-left: 2rem;
                             margin-right: 2rem;
                             margin-top: 2rem;
-                        
-                            // @include breakpoint-down(tablet) {
-                            //     grid-template-columns: repeat(2, 1fr);
-                            // }
-                        
-                            // @include breakpoint-down(mobile) {
-                            //     grid-template-columns: repeat(1, 1fr);
-                            // }
-
-                            // @include breakpoint-up(desktop) {
-                            //     grid-template-columns: repeat(4, 1fr);
-                            // }
 
                             &::before {
                                 content: '';
@@ -346,7 +396,7 @@
                                 right: 0;
                                 top: -30px;
                                 height: 1px;
-                                width: 50%;
+                                width: 70%;
                                 margin: 0 auto;
                                 background-color: $auxiliary_color;
                             }

@@ -138,9 +138,13 @@ export const fetchTickerDetails = async function(ticker, abortController) {
 
             if (!results) throw new errors.InfoError()
 
-            const address = [results.address.address1, results.address.city, results.address.state].join(', ')
+            let address = ''
+            if (results.address) address = [results.address.address1, results.address.city, results.address.state].join(', ')
+            else address = 'Not available'
 
-            const {name, ticker: symbol, description, market_cap: marketCap, sic_description: sector, homepage_url: website} = results
+            let {name, ticker: symbol, description, market_cap: marketCap, sic_description: sector, homepage_url: website} = results
+
+            if (!sector) sector = 'Not available'
 
             state.selectedCompany = {
                 name,

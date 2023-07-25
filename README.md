@@ -9,7 +9,7 @@ When the user clicks on a company, a dialog is presented, containing three piece
 - general information about the company, like its description, address, sector, etc. The API I use to get this data is Polygon.io as well (different endpoint though).
 - some statistical numbers that help me to illustrate the company's performance over time, such as it total revenue, gross profit, depreciation, and interest income. Those stats are chosen by me on arbitrary basis. This data comes from Alpha Vantage API.
 
-## FIY
+## FYI
 All the data comes from free-tier APIs. For certain companies those APIs have no information at all. Additionally, there are limits for calls. For example Polygon.io has 5 calls per minute limit, Alpha Vantage doesn't allow more than 100 calls a day. All those restrictions I tried to mitigate with proper error handling, and display appropriate error messages instead of the data.
 
 ## Technologies

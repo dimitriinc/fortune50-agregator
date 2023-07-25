@@ -1,4 +1,5 @@
 import spinner from '../images/spinner.svg'
+import fiyIcon from '../images/fyi.png'
 import { stockExchanges, VISIBLE, HIDDEN, DIRECTION_LEFT, DIRECTION_RIGHT } from './conifg'
 import numeral from 'numeral'
 import Chart from 'chart.js/auto'
@@ -136,7 +137,17 @@ class View {
 
 
                         <div class="selected--display-view visible" id="display-view--graph">
+
+                            <div class="fyi">
+                                <div id="fyi--icon">
+                                    <img  src="${fiyIcon}">
+                                    <div id="fyi--text" class="hidden">The data is processed by a resampling algorithm and condensed to 15 bars of closing prices, preserving the general trends</div>
+                                </div>
+                            </div>
+
                             <div class="canvas">
+                                
+                                    
                                 <img class="graph--spinner" src="${spinner}">
                             </div>
                             <div class="view--graph-buttons">
@@ -164,6 +175,9 @@ class View {
         this._overlayDouble.insertAdjacentHTML('afterbegin', html)
         this._blankSelectedCard = document.querySelector('.selected-container')
         this._selectedDisplay = document.querySelector('.selected--display')
+        document.getElementById('fyi--icon').addEventListener('click', () => {
+            document.getElementById('fyi--text').classList.toggle('hidden')
+        })
     }
 
     async renderCardExit(direction) {
@@ -585,6 +599,7 @@ class View {
     }
 
     resetSelectOptionsStyles(optionID) {
+        document.getElementById('fyi--text').classList.add('hidden')
         document.querySelectorAll('.selected--options-option').forEach(button => {
             button.classList.remove('active')
             if (button.id === optionID) button.classList.add('active')
@@ -604,6 +619,7 @@ class View {
     }
 
     resetGraphBtnStyles(optionID) {
+        document.getElementById('fyi--text').classList.add('hidden')
         document.querySelectorAll('.view--graph-buttons--button').forEach(button => {
             button.classList.remove('active')
             if (button.id === optionID) button.classList.add('active')
@@ -679,12 +695,14 @@ class View {
     }
 
     _removeUrlPrefix(url) {
-        const httpPrefix = 'http://www.'
-        const httpsPrefix = 'https://www.'
 
-        if (url.startsWith(httpPrefix)) return url.slice(httpPrefix.length)
-        if (url.startsWith(httpsPrefix)) return url.slice(httpsPrefix.length)
-        else return url
+        const prefixes = ['http://www.', 'https://www.', 'http://', 'https://']
+        
+        for (let prefix of prefixes) {
+            if (url.startsWith(prefix)) return url.slice(prefix.length)
+        }
+
+        return url
     }
 }
 
