@@ -181,9 +181,13 @@ export const fetchCompanyIncomeStatement = async function(symbol, abortControlle
 
             if (!data.annualReports) throw new errors.StatsError()
 
-
+            resetStats()
+            
             for (let i = data.annualReports.length - 1; i >= 0 ; i--) {
-                const year = data.annualReports[i].fiscalDateEnding.slice(0,4)
+                let year = +(data.annualReports[i].fiscalDateEnding.slice(0,4))
+                const month = +(data.annualReports[i].fiscalDateEnding.substring(5,7))
+                if (statementComesFromFollowingYear(month)) year--
+
                 state.statistics.totalRevenue.set(year, +data.annualReports[i].totalRevenue)
                 state.statistics.grossProfit.set(year, +data.annualReports[i].grossProfit)
                 state.statistics.depreciation.set(year, +data.annualReports[i].depreciation)
@@ -247,4 +251,16 @@ export const setCompanySymbol = function(symbol) {
 
 export const setCompanyName = function(name) {
     state.selectedCompany.name = name
+}
+
+const resetStats = function() {
+    
+    for (let key in state.statistics) {
+        state.statistics[key] = new Map()
+    }
+}
+
+const statementComesFromFollowingYear = function(month) {
+    if (month < 6) return true
+    else return false
 }
