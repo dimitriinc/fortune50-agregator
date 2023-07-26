@@ -1,5 +1,5 @@
 import spinner from '../images/spinner.svg'
-import fiyIcon from '../images/fyi.png'
+import fyiIcon from '../images/fyi.png'
 import { stockExchanges, VISIBLE, HIDDEN, DIRECTION_LEFT, DIRECTION_RIGHT } from './conifg'
 import numeral from 'numeral'
 import Chart from 'chart.js/auto'
@@ -26,8 +26,6 @@ class View {
     _selectedDisplay
 
     _sounds = [new Audio(whoosh), new Audio(roblox), new Audio(fart), new Audio(coin), new Audio(flashback)]
-
-
 
     //============== RENDER METHODS ========================//
 
@@ -140,7 +138,7 @@ class View {
 
                             <div class="fyi">
                                 <div id="fyi--icon">
-                                    <img  src="${fiyIcon}">
+                                    <img  src="${fyiIcon}">
                                     <div id="fyi--text" class="hidden">The data is processed by a resampling algorithm and condensed to 15 bars of closing prices, preserving the general trends</div>
                                 </div>
                             </div>
@@ -424,17 +422,17 @@ class View {
         this.exitSelectedMode()
     }
 
-    renderSelectError(message) {
-        this._blankSelectedCard.innerHTML = ''
-        const html = `
-            <div class="error-message" style="opacity:0">
-                ${message}
-            </div>
-        `
-        this._blankSelectedCard.insertAdjacentHTML('afterbegin', html)
-        document.querySelector('.error-message').setAttribute('style', 'opacity:1')
+    // renderSelectError(message) {
+    //     this._blankSelectedCard.innerHTML = ''
+    //     const html = `
+    //         <div class="error-message" style="opacity:0">
+    //             ${message}
+    //         </div>
+    //     `
+    //     this._blankSelectedCard.insertAdjacentHTML('afterbegin', html)
+    //     document.querySelector('.error-message').setAttribute('style', 'opacity:1')
         
-    }
+    // }
 
     renderGraphError(message) {
 

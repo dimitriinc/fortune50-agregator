@@ -109,8 +109,7 @@ async function controlSelect(symbol, index, name, direction = undefined) {
 
         // model.persistSelectedMode(true)
     } catch (error) {
-        view.renderSelectError(error.message)
-        // console.error(error)
+        // view.renderSelectError(error.message)
         // model.persistSelectedMode(false)
     }
 }
